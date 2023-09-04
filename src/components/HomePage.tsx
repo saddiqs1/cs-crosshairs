@@ -1,5 +1,5 @@
+import { copy } from '@lib/copy'
 import { Center, Stack, Title, Button, TextInput, Flex } from '@mantine/core'
-import { useClipboard } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
 import { crosshairToConVars, decodeCrosshairShareCode } from 'csgo-sharecode'
 import { useState } from 'react'
@@ -8,25 +8,26 @@ type Props = {}
 
 export const HomePage: React.FC<Props> = ({}) => {
 	const [crosshairCode, setCrosshairCode] = useState('')
-	const clipboard = useClipboard({ timeout: 2000 })
 
-	const onCopy = () => {
+	const onCopy = async () => {
 		try {
 			const crosshairCommands = crosshairToConVars(
 				decodeCrosshairShareCode(crosshairCode)
 			).replaceAll('\n', ';')
 
-			clipboard.copy(crosshairCommands)
+			await copy(crosshairCommands)
 
 			notifications.show({
 				title: 'Crosshair Copied',
 				message: 'Crosshair is copied to your clipboard',
 				color: 'green',
 			})
-		} catch (error) {
+		} catch (error: any) {
 			notifications.show({
 				title: 'Error Copying Crosshair',
-				message: 'Crosshair input is in an incorrect format',
+				message:
+					new Error(error).message ??
+					'Crosshair input is in an incorrect format',
 				color: 'red',
 			})
 		}
