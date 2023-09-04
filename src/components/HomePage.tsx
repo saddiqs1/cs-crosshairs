@@ -9,13 +9,13 @@ type Props = {}
 export const HomePage: React.FC<Props> = ({}) => {
 	const [crosshairCode, setCrosshairCode] = useState('')
 
-	const onCopy = async () => {
+	const onCopy = () => {
 		try {
 			const crosshairCommands = crosshairToConVars(
 				decodeCrosshairShareCode(crosshairCode)
 			).replaceAll('\n', ';')
 
-			await copy(crosshairCommands)
+			copy(crosshairCommands)
 
 			notifications.show({
 				title: 'Crosshair Copied',
@@ -25,9 +25,7 @@ export const HomePage: React.FC<Props> = ({}) => {
 		} catch (error: any) {
 			notifications.show({
 				title: 'Error Copying Crosshair',
-				message:
-					new Error(error).message ??
-					'Crosshair input is in an incorrect format',
+				message: 'Crosshair input is in an incorrect format',
 				color: 'red',
 			})
 		}

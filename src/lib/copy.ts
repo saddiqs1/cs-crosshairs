@@ -1,7 +1,9 @@
-export const copy = async (textToCopy: string) => {
-	try {
-		await navigator.clipboard.writeText(textToCopy)
-	} catch (error: any) {
-		throw new Error(error)
-	}
+export const copy = (textToCopy: string) => {
+	const tmpElement = document.createElement('input')
+	tmpElement.value = textToCopy
+	document.body.appendChild(tmpElement)
+	tmpElement.select()
+
+	document.execCommand('copy')
+	document.body.removeChild(tmpElement)
 }
