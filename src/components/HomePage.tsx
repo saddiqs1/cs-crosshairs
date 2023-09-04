@@ -26,7 +26,7 @@ export const HomePage: React.FC<Props> = ({}) => {
 		} catch (error) {
 			notifications.show({
 				title: 'Error Copying Crosshair',
-				message: 'Crosshair is copied to your clipboard',
+				message: 'Crosshair input is in an incorrect format',
 				color: 'red',
 			})
 		}
