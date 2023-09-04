@@ -1,35 +1,55 @@
-import { Center, Stack, Title, Group, Button } from '@mantine/core'
+import { Center, Stack, Title, Button, TextInput, Flex } from '@mantine/core'
+import { useClipboard } from '@mantine/hooks'
 import { notifications } from '@mantine/notifications'
+import { crosshairToConVars, decodeCrosshairShareCode } from 'csgo-sharecode'
+import { useState } from 'react'
 
 type Props = {}
 
 export const HomePage: React.FC<Props> = ({}) => {
-	const notification = () => {
-		notifications.show({
-			title: 'Default notification',
-			message: 'Hey there, your code is awesome! 🤥',
-		})
+	const [crosshairCode, setCrosshairCode] = useState('')
+	const clipboard = useClipboard({ timeout: 2000 })
+
+	const onCopy = () => {
+		try {
+			const crosshairCommands = crosshairToConVars(
+				decodeCrosshairShareCode(crosshairCode)
+			).replaceAll('\n', ';')
+
+			clipboard.copy(crosshairCommands)
+
+			notifications.show({
+				title: 'Crosshair Copied',
+				message: 'Crosshair is copied to your clipboard',
+				color: 'green',
+			})
+		} catch (error) {
+			notifications.show({
+				title: 'Error Copying Crosshair',
+				message: 'Crosshair is copied to your clipboard',
+				color: 'red',
+			})
+		}
 	}
 
 	return (
 		<Center h={'100vh'}>
 			<Stack spacing={'xl'}>
 				<Title order={1} ta={'center'}>
-					App Template
+					CS2 Crosshair Converter
 				</Title>
-				<Group position={'apart'} spacing={'xl'}>
-					<Button component='a' href='/api/hello'>
-						api/hello
-					</Button>
-					<Button
-						component='a'
-						href='https://mantine.dev/pages/getting-started/'
-						target='_blank'
-					>
-						mantine docs
-					</Button>
-					<Button onClick={notification}>notifications</Button>
-				</Group>
+				<Flex justify={'center'} align={'end'} gap={'xl'}>
+					<TextInput
+						value={crosshairCode}
+						onChange={(event) =>
+							setCrosshairCode(event.currentTarget.value)
+						}
+						label={'Enter Crosshair Code'}
+						placeholder={'CSGO-some-random-code'}
+						w={320}
+					/>
+					<Button onClick={onCopy}>Copy Crosshair Commands</Button>
+				</Flex>
 			</Stack>
 		</Center>
 	)
