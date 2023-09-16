@@ -1,8 +1,8 @@
 import { copy } from '@lib/copy'
 import { Center, Stack, Title, Button, TextInput, Flex } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { crosshairToConVars, decodeCrosshairShareCode } from 'csgo-sharecode'
 import { useState } from 'react'
+const csgoSharecode = require('csgo-sharecode')
 
 type Props = {}
 
@@ -11,9 +11,11 @@ export const HomePage: React.FC<Props> = ({}) => {
 
 	const onCopy = () => {
 		try {
-			const crosshairCommands = crosshairToConVars(
-				decodeCrosshairShareCode(crosshairCode)
-			).replaceAll('\n', ';')
+			const crosshairCommands = csgoSharecode
+				.crosshairToConVars(
+					csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+				)
+				.replaceAll('\n', ';')
 
 			copy(crosshairCommands)
 
