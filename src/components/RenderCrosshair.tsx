@@ -31,42 +31,44 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 	const centerX = size / 2
 	const centerY = size / 2
 
+	const GAP = 5
+
 	return (
 		<svg width={size} height={size} xmlns='http://www.w3.org/2000/svg'>
 			{/* Horizontal Lines */}
 			<line
-				x1={centerX - 10}
+				x1={centerX - GAP}
 				y1={centerY}
-				x2={centerX - 30}
+				x2={centerX - GAP - length}
 				y2={centerY}
 				strokeWidth='1'
 				stroke='red'
 			/>
 			<line
-				x1={centerX + 10}
+				x1={centerX + GAP}
 				y1={centerY}
-				x2={centerX + 30}
+				x2={centerX + GAP + length}
 				y2={centerY}
 				strokeWidth='1'
-				stroke='red'
+				stroke='lightblue'
 			/>
 
 			{/* Vertical Lines */}
 			<line
 				x1={centerX}
-				y1={centerY - 10}
+				y1={centerY - GAP}
 				x2={centerX}
-				y2={centerY - 30}
+				y2={centerY - GAP - length}
 				strokeWidth='1'
 				stroke='green'
 			/>
 			<line
 				x1={centerX}
-				y1={centerY + 10}
+				y1={centerY + GAP}
 				x2={centerX}
-				y2={centerY + 30}
+				y2={centerX + GAP + length}
 				strokeWidth='1'
-				stroke='green'
+				stroke='yellow'
 			/>
 
 			{/* Center Dot */}
