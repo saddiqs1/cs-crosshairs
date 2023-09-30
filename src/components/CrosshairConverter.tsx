@@ -2,7 +2,7 @@ import { copy } from '@lib/copy'
 import { Button, TextInput, Flex } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
-const csgoSharecode = require('csgo-sharecode')
+import csgoSharecode from 'csgo-sharecode'
 
 type Props = {}
 
