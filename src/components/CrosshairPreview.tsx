@@ -1,5 +1,5 @@
 import { copy } from '@lib/copy'
-import { Box } from '@mantine/core'
+import { Box, Text } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 const csgoSharecode = require('csgo-sharecode')
 import { RenderCrosshair } from './RenderCrosshair'
@@ -34,9 +34,11 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	}
 
 	return (
-		<Box>
+		<Box onClick={onClick}>
 			<RenderCrosshair crosshair={crosshair} size={100} />
-			<Box>{crosshairCode} preview</Box>
+			<Text>
+				{crosshairCode} - {crosshair.gap}
+			</Text>
 		</Box>
 	)
 }

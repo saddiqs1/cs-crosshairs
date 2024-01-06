@@ -3,7 +3,9 @@ type Props = {
 	size: number
 }
 
-export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
+// https://github.com/Skarbo/CSGOCrosshair/tree/master
+
+const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 	const {
 		length,
 		red,
@@ -28,50 +30,112 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 		style,
 	} = crosshair
 
+	/*
+        gap: -5
+        outcome = 0
+
+        gap: 0
+        outcome = 5
+
+        gap: 5
+        outcome = 10
+
+    */
+	const multiplier = size * 0.055
+
+	return {
+		length: 5 * (size * 0.045), // length
+		red,
+		green,
+		blue,
+		gap: 0 + 5, // gap
+		alphaEnabled,
+		alpha,
+		outlineEnabled,
+		outline,
+		color,
+		thickness,
+		centerDotEnabled,
+		splitDistance,
+		followRecoil,
+		fixedCrosshairGap,
+		innerSplitAlpha,
+		outerSplitAlpha,
+		splitSizeRatio,
+		tStyleEnabled,
+		deployedWeaponGapEnabled,
+		style,
+	}
+}
+
+export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
+	const {
+		length,
+		red,
+		green,
+		blue,
+		gap,
+		alphaEnabled,
+		alpha,
+		outlineEnabled,
+		outline,
+		color,
+		thickness,
+		centerDotEnabled,
+		splitDistance,
+		followRecoil,
+		fixedCrosshairGap,
+		innerSplitAlpha,
+		outerSplitAlpha,
+		splitSizeRatio,
+		tStyleEnabled,
+		deployedWeaponGapEnabled,
+		style,
+	} = getCrosshairValues(crosshair, size)
+
 	const centerX = size / 2
 	const centerY = size / 2
-
-	const GAP = 5
 
 	return (
 		<svg width={size} height={size} xmlns='http://www.w3.org/2000/svg'>
 			{/* Horizontal Lines */}
 			<line
-				x1={centerX - GAP}
+				x1={centerX - gap}
 				y1={centerY}
-				x2={centerX - GAP - length}
+				x2={centerX - gap - length}
 				y2={centerY}
 				strokeWidth='1'
-				stroke='red'
+				stroke='red' //left
 			/>
 			<line
-				x1={centerX + GAP}
+				x1={centerX + gap}
 				y1={centerY}
-				x2={centerX + GAP + length}
+				x2={centerX + gap + length}
 				y2={centerY}
 				strokeWidth='1'
-				stroke='lightblue'
+				stroke='lightblue' //right
 			/>
 
 			{/* Vertical Lines */}
 			<line
 				x1={centerX}
-				y1={centerY - GAP}
+				y1={centerY - gap}
 				x2={centerX}
-				y2={centerY - GAP - length}
+				y2={centerY - gap - length}
 				strokeWidth='1'
-				stroke='green'
+				stroke='green' //top
 			/>
 			<line
 				x1={centerX}
-				y1={centerY + GAP}
+				y1={centerY + gap}
 				x2={centerX}
-				y2={centerX + GAP + length}
+				y2={centerX + gap + length}
 				strokeWidth='1'
-				stroke='yellow'
+				stroke='yellow' //bottom
 			/>
 
 			{/* Center Dot */}
+			{/* TODO - do this after everything else */}
 			{centerDotEnabled && (
 				<rect
 					x={centerX - 5}
