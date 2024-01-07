@@ -38,7 +38,11 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 		<Box>
 			<Box
 				onClick={onClick}
-				sx={{ border: '1px dashed red', cursor: 'pointer' }}
+				sx={{
+					border: '1px dashed red',
+					cursor: 'pointer',
+					background: 'rgba(20, 20, 20, 0.5)',
+				}}
 				w={101}
 				h={101}
 			>

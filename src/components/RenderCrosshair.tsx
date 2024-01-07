@@ -5,6 +5,29 @@ type Props = {
 
 // https://github.com/Skarbo/CSGOCrosshair/tree/master
 
+const getColor = (
+	colorCode: number,
+	r: number,
+	g: number,
+	b: number,
+	alphaEnabled: boolean,
+	alpha: number
+) => {
+	if (colorCode === 1) {
+		return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+	} else if (colorCode === 2) {
+		return `rgb(250, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+	} else if (colorCode === 3) {
+		return `rgb(46, 46, 250, ${alphaEnabled ? alpha / 255 : 1})`
+	} else if (colorCode === 4) {
+		return `rgb(46, 250, 250, ${alphaEnabled ? alpha / 255 : 1})`
+	} else if (colorCode === 5) {
+		return `rgba(${r}, ${g}, ${b}, ${alphaEnabled ? alpha / 255 : 1})`
+	}
+
+	return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+}
+
 const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 	const {
 		length,
@@ -30,39 +53,13 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 		style,
 	} = crosshair
 
-	/*
-        gap: -5
-        outcome = 0
-
-        gap: 0
-        outcome = 5
-
-        gap: 5
-        outcome = 10
-
-		GAP RULES:
-		~ -1.9 <= x <= -1 = -2 
-		~ -0.9 <= x < 0 = -1
-		~ 0 <= x < 1 = 0 
-		~ 1.1 <= x < 2 = 1 
-		~ 2.1 <= x < 3 = 2
-		... 
-
-    */
-	const multiplier = size * 0.025
-
 	return {
-		length: length * multiplier,
-		red,
-		green,
-		blue,
-		gap: 0 + 5, // gap
-		alphaEnabled,
-		alpha,
+		length: length * 2.85,
+		gap: (gap + 5) * (thickness * 0.7),
 		outlineEnabled,
 		outline,
-		color,
-		thickness: thickness * multiplier,
+		color: getColor(color, red, green, blue, alphaEnabled, alpha),
+		thickness: thickness * 2.85,
 		centerDotEnabled,
 		splitDistance,
 		followRecoil,
@@ -79,12 +76,7 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 	const {
 		length,
-		red,
-		green,
-		blue,
 		gap,
-		alphaEnabled,
-		alpha,
 		outlineEnabled,
 		outline,
 		color,
@@ -115,41 +107,45 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 			<rect y={center - 0.5} width={size} height='1' fill='gray' /> */}
 
 			{/* Horizontal Lines */}
-			<rect
+			<rect //left
 				x={center - gap - length}
 				y={center - thickness / 2}
 				width={length}
 				height={thickness}
-				stroke={undefined}
-				fill={'red'} //left
+				strokeWidth={outline}
+				stroke={outlineEnabled ? 'black' : undefined}
+				fill={color}
 			/>
-			<rect
+			<rect //right
 				x={center + gap}
 				y={center - thickness / 2}
 				width={length}
 				height={thickness}
-				stroke={undefined}
-				fill={'lightblue'} //right
+				strokeWidth={outline}
+				stroke={outlineEnabled ? 'black' : undefined}
+				fill={color}
 			/>
 
 			{/* Vertical Lines */}
 			{!tStyleEnabled && (
-				<rect
+				<rect //top
 					x={center - thickness / 2}
 					y={center - gap - length}
 					width={thickness}
 					height={length}
-					stroke={undefined}
-					fill={'green'} //top
+					strokeWidth={outline}
+					stroke={outlineEnabled ? 'black' : undefined}
+					fill={color}
 				/>
 			)}
-			<rect
+			<rect //bottom
 				x={center - thickness / 2}
 				y={center + gap}
 				width={thickness}
 				height={length}
-				stroke={undefined}
-				fill={'yellow'} //bottom
+				strokeWidth={outline}
+				stroke={outlineEnabled ? 'black' : undefined}
+				fill={color}
 			/>
 
 			{/* Center Dot */}
@@ -159,7 +155,7 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 					y={center - thickness / 2}
 					width={thickness}
 					height={thickness}
-					fill='blue'
+					fill={color}
 				/>
 			)}
 		</svg>
@@ -203,3 +199,22 @@ export interface Crosshair {
 	 */
 	style: number
 }
+
+/*
+	gap: -5
+	outcome = 0
+
+	gap: 0
+	outcome = 5
+
+	gap: 5
+	outcome = 10
+
+	GAP RULES:
+	~ -1.9 <= x <= -1 = -2 
+	~ -0.9 <= x < 0 = -1
+	~ 0 <= x < 1 = 0 
+	~ 1.1 <= x < 2 = 1 
+	~ 2.1 <= x < 3 = 2
+	... 
+*/
