@@ -10,6 +10,7 @@ type Props = {
 
 export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	const crosshair = csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+	console.log(crosshair)
 
 	const onClick = () => {
 		try {
@@ -34,10 +35,20 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	}
 
 	return (
-		<Box onClick={onClick}>
-			<RenderCrosshair crosshair={crosshair} size={100} />
+		<Box>
+			<Box
+				onClick={onClick}
+				sx={{ border: '1px dashed red', cursor: 'pointer' }}
+				w={101}
+				h={101}
+			>
+				<RenderCrosshair crosshair={crosshair} size={100} />
+			</Box>
+			<Text>size: {crosshair.length}</Text>
+			<Text>thickness: {crosshair.thickness}</Text>
+			<Text>gap: {crosshair.gap}</Text>
 			<Text>
-				{crosshairCode} - {crosshair.gap}
+				dot: {(crosshair.centerDotEnabled as boolean).toString()}
 			</Text>
 		</Box>
 	)

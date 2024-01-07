@@ -40,11 +40,19 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
         gap: 5
         outcome = 10
 
+		GAP RULES:
+		~ -1.9 <= x <= -1 = -2 
+		~ -0.9 <= x < 0 = -1
+		~ 0 <= x < 1 = 0 
+		~ 1.1 <= x < 2 = 1 
+		~ 2.1 <= x < 3 = 2
+		... 
+
     */
-	const multiplier = size * 0.055
+	const multiplier = size * 0.025
 
 	return {
-		length: 5 * (size * 0.045), // length
+		length: length * multiplier,
 		red,
 		green,
 		blue,
@@ -54,7 +62,7 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 		outlineEnabled,
 		outline,
 		color,
-		thickness,
+		thickness: thickness * multiplier,
 		centerDotEnabled,
 		splitDistance,
 		followRecoil,
@@ -93,55 +101,64 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 		style,
 	} = getCrosshairValues(crosshair, size)
 
-	const centerX = size / 2
-	const centerY = size / 2
+	const center = size / 2
 
 	return (
-		<svg width={size} height={size} xmlns='http://www.w3.org/2000/svg'>
+		<svg
+			viewBox={`0 0 ${size} ${size}`}
+			width={size}
+			height={size}
+			xmlns='http://www.w3.org/2000/svg'
+		>
+			{/* Guide Lines */}
+			{/* <rect x={center - 0.5} height={size} width='1' fill='gray' />
+			<rect y={center - 0.5} width={size} height='1' fill='gray' /> */}
+
 			{/* Horizontal Lines */}
-			<line
-				x1={centerX - gap}
-				y1={centerY}
-				x2={centerX - gap - length}
-				y2={centerY}
-				strokeWidth='1'
-				stroke='red' //left
+			<rect
+				x={center - gap - length}
+				y={center - thickness / 2}
+				width={length}
+				height={thickness}
+				stroke={undefined}
+				fill={'red'} //left
 			/>
-			<line
-				x1={centerX + gap}
-				y1={centerY}
-				x2={centerX + gap + length}
-				y2={centerY}
-				strokeWidth='1'
-				stroke='lightblue' //right
+			<rect
+				x={center + gap}
+				y={center - thickness / 2}
+				width={length}
+				height={thickness}
+				stroke={undefined}
+				fill={'lightblue'} //right
 			/>
 
 			{/* Vertical Lines */}
-			<line
-				x1={centerX}
-				y1={centerY - gap}
-				x2={centerX}
-				y2={centerY - gap - length}
-				strokeWidth='1'
-				stroke='green' //top
-			/>
-			<line
-				x1={centerX}
-				y1={centerY + gap}
-				x2={centerX}
-				y2={centerX + gap + length}
-				strokeWidth='1'
-				stroke='yellow' //bottom
+			{!tStyleEnabled && (
+				<rect
+					x={center - thickness / 2}
+					y={center - gap - length}
+					width={thickness}
+					height={length}
+					stroke={undefined}
+					fill={'green'} //top
+				/>
+			)}
+			<rect
+				x={center - thickness / 2}
+				y={center + gap}
+				width={thickness}
+				height={length}
+				stroke={undefined}
+				fill={'yellow'} //bottom
 			/>
 
 			{/* Center Dot */}
-			{/* TODO - do this after everything else */}
 			{centerDotEnabled && (
 				<rect
-					x={centerX - 5}
-					y={centerY - 5}
-					width='10'
-					height='10'
+					x={center - thickness / 2}
+					y={center - thickness / 2}
+					width={thickness}
+					height={thickness}
 					fill='blue'
 				/>
 			)}
