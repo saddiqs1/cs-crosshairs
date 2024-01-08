@@ -1,4 +1,5 @@
 import { Box } from '@mantine/core'
+import Canvas from './shared/Canvas'
 
 type Props = {
 	crosshair: Crosshair
@@ -97,7 +98,7 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 	}
 }
 
-export const RenderCrosshair: React.FC<Props> = ({
+export const RenderCrosshairCanvas: React.FC<Props> = ({
 	crosshair,
 	size,
 	onClick,
@@ -123,6 +124,13 @@ export const RenderCrosshair: React.FC<Props> = ({
 
 	const center = size / 2
 
+	const draw = (ctx: CanvasRenderingContext2D) => {
+		ctx.fillStyle = '#000000'
+		ctx.beginPath()
+		ctx.arc(50, 100, 20, 0, 2 * Math.PI)
+		ctx.fill()
+	}
+
 	return (
 		<Box
 			onClick={onClick}
@@ -134,69 +142,7 @@ export const RenderCrosshair: React.FC<Props> = ({
 			w={size + 1}
 			h={size + 1}
 		>
-			<svg
-				viewBox={`0 0 ${size} ${size}`}
-				width={size}
-				height={size}
-				xmlns='http://www.w3.org/2000/svg'
-			>
-				{/* Guide Lines */}
-				{/* <rect x={center - 0.5} height={size} width='1' fill='gray' />
-					<rect y={center - 0.5} width={size} height='1' fill='gray' /> */}
-
-				{/* Horizontal Lines */}
-				<rect //left
-					x={center - gap - length}
-					y={center - thickness / 2}
-					width={length}
-					height={thickness}
-					strokeWidth={outline}
-					stroke={outlineEnabled ? 'black' : undefined}
-					fill={color}
-				/>
-				<rect //right
-					x={center + gap}
-					y={center - thickness / 2}
-					width={length}
-					height={thickness}
-					strokeWidth={outline}
-					stroke={outlineEnabled ? 'black' : undefined}
-					fill={color}
-				/>
-
-				{/* Vertical Lines */}
-				{!tStyleEnabled && (
-					<rect //top
-						x={center - thickness / 2}
-						y={center - gap - length}
-						width={thickness}
-						height={length}
-						strokeWidth={outline}
-						stroke={outlineEnabled ? 'black' : undefined}
-						fill={color}
-					/>
-				)}
-				<rect //bottom
-					x={center - thickness / 2}
-					y={center + gap}
-					width={thickness}
-					height={length}
-					strokeWidth={outline}
-					stroke={outlineEnabled ? 'black' : undefined}
-					fill={color}
-				/>
-
-				{/* Center Dot */}
-				{centerDotEnabled && (
-					<rect
-						x={center - thickness / 2}
-						y={center - thickness / 2}
-						width={thickness}
-						height={thickness}
-						fill={color}
-					/>
-				)}
-			</svg>
+			<Canvas draw={draw} />
 		</Box>
 	)
 }
