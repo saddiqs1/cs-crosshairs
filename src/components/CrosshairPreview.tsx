@@ -4,7 +4,6 @@ import { Box, Text, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 const csgoSharecode = require('csgo-sharecode')
 import { RenderCrosshair } from './RenderCrosshair'
-// import { RenderCrosshairCanvas } from './RenderCrosshairCanvas'
 
 const RenderCrosshairCanvas = dynamic(() => import('./RenderCrosshairCanvas'), {
 	ssr: false,
@@ -42,18 +41,16 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 
 	return (
 		<Box>
-			<Group>
-				{/* <RenderCrosshair
-					onClick={onClick}
-					crosshair={crosshair}
-					size={100}
-				/> */}
-				<RenderCrosshairCanvas
-					onClick={onClick}
-					crosshair={crosshair}
-					size={100}
-				/>
-			</Group>
+			<RenderCrosshair
+				onClick={onClick}
+				crosshair={crosshair}
+				size={100}
+			/>
+			<RenderCrosshairCanvas
+				onClick={onClick}
+				crosshair={crosshair}
+				size={100}
+			/>
 			<Text>size: {crosshair.length}</Text>
 			<Text>thickness: {crosshair.thickness}</Text>
 			<Text>gap: {crosshair.gap}</Text>
