@@ -1,12 +1,12 @@
 import { copy } from '@lib/copy'
-import { Center, Stack, Title, Button, TextInput, Flex } from '@mantine/core'
+import { Button, TextInput, Flex } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useState } from 'react'
 const csgoSharecode = require('csgo-sharecode')
 
 type Props = {}
 
-export const HomePage: React.FC<Props> = ({}) => {
+export const CrosshairConverter: React.FC<Props> = ({}) => {
 	const [crosshairCode, setCrosshairCode] = useState('')
 
 	const onCopy = () => {
@@ -34,24 +34,17 @@ export const HomePage: React.FC<Props> = ({}) => {
 	}
 
 	return (
-		<Center h={'100vh'}>
-			<Stack spacing={'xl'}>
-				<Title order={1} ta={'center'}>
-					CS2 Crosshair Converter
-				</Title>
-				<Flex justify={'center'} align={'end'} gap={'xl'}>
-					<TextInput
-						value={crosshairCode}
-						onChange={(event) =>
-							setCrosshairCode(event.currentTarget.value)
-						}
-						label={'Enter Crosshair Code'}
-						placeholder={'CSGO-some-random-code'}
-						w={320}
-					/>
-					<Button onClick={onCopy}>Copy Crosshair Commands</Button>
-				</Flex>
-			</Stack>
-		</Center>
+		<Flex justify={'center'} align={'end'} gap={'xl'}>
+			<TextInput
+				value={crosshairCode}
+				onChange={(event) =>
+					setCrosshairCode(event.currentTarget.value)
+				}
+				label={'Enter Crosshair Code'}
+				placeholder={'CSGO-some-random-code'}
+				w={320}
+			/>
+			<Button onClick={onCopy}>Copy Crosshair Commands</Button>
+		</Flex>
 	)
 }
