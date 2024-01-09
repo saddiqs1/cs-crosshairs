@@ -25,6 +25,8 @@ export const RenderCrosshair: React.FC<Props> = ({
 
 	const center = size / 2
 
+	// NOTE: The order of the groups in the code below are in a specific order for a reason, to mimic the order of priority for the lines of a crosshair in CS2.
+	// i.e. from bottom to top, left line, right line, top line, bottom line and then dot.
 	return (
 		<Box
 			onClick={onClick}

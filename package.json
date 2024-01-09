@@ -1,5 +1,5 @@
 {
-	"name": "app-template",
+	"name": "cs-crosshairs",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -21,11 +21,9 @@
 		"csgo-sharecode": "^3.1.0",
 		"eslint": "8.48.0",
 		"eslint-config-next": "13.4.19",
-		"konva": "^9.3.0",
 		"next": "13.4.19",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
-		"react-konva": "^18.2.10",
 		"typescript": "5.2.2"
 	},
 	"devDependencies": {
