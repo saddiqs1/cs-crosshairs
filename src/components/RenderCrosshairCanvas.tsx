@@ -1,5 +1,6 @@
+import { getColor } from '@lib/crosshairUtils'
 import { Box } from '@mantine/core'
-import Canvas from './shared/Canvas'
+import { Stage, Layer, Rect } from 'react-konva'
 
 type Props = {
 	crosshair: Crosshair
@@ -7,30 +8,8 @@ type Props = {
 	onClick: () => void
 }
 
-// https://github.com/Skarbo/CSGOCrosshair/tree/master
-
-const getColor = (
-	colorCode: number,
-	r: number,
-	g: number,
-	b: number,
-	alphaEnabled: boolean,
-	alpha: number
-) => {
-	if (colorCode === 1) {
-		return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
-	} else if (colorCode === 2) {
-		return `rgb(250, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
-	} else if (colorCode === 3) {
-		return `rgb(46, 46, 250, ${alphaEnabled ? alpha / 255 : 1})`
-	} else if (colorCode === 4) {
-		return `rgb(46, 250, 250, ${alphaEnabled ? alpha / 255 : 1})`
-	} else if (colorCode === 5) {
-		return `rgba(${r}, ${g}, ${b}, ${alphaEnabled ? alpha / 255 : 1})`
-	}
-
-	return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
-}
+// https://github.com/hauptrolle/csgo-crosshair-generator/blob/master/src/components/CrosshairPreview/CrosshairPreview.js
+// TODO - copy calculations from above. See if it works. If it does work, see if it can work with svg...
 
 const getThickness = (thickness: number) => {
 	return thickness <= 0 ? 0.5 : thickness
@@ -80,7 +59,7 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 
 	return {
 		length: length * 2.85,
-		gap: (actualGap + 5) * (actualThickness * 0.7),
+		gap: (actualGap + 5) * (actualThickness * 1),
 		outlineEnabled,
 		outline,
 		color: getColor(color, red, green, blue, alphaEnabled, alpha),
@@ -98,7 +77,7 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 	}
 }
 
-export const RenderCrosshairCanvas: React.FC<Props> = ({
+const RenderCrosshairCanvas: React.FC<Props> = ({
 	crosshair,
 	size,
 	onClick,
@@ -124,13 +103,6 @@ export const RenderCrosshairCanvas: React.FC<Props> = ({
 
 	const center = size / 2
 
-	const draw = (ctx: CanvasRenderingContext2D) => {
-		ctx.fillStyle = '#000000'
-		ctx.beginPath()
-		ctx.arc(50, 100, 20, 0, 2 * Math.PI)
-		ctx.fill()
-	}
-
 	return (
 		<Box
 			onClick={onClick}
@@ -142,7 +114,89 @@ export const RenderCrosshairCanvas: React.FC<Props> = ({
 			w={size + 1}
 			h={size + 1}
 		>
-			<Canvas draw={draw} />
+			<Stage width={size} height={size}>
+				<Layer>
+					{/* <Rect
+						x={center - 0.5}
+						width={1}
+						height={size}
+						fill={'gray'}
+					/>
+					<Rect
+						y={center - 0.5}
+						height={1}
+						width={size}
+						fill={'gray'}
+					/> */}
+
+					<Rect
+						x={center}
+						y={center}
+						width={thickness}
+						height={length * -1}
+						strokeWidth={outline}
+						stroke={outlineEnabled ? 'black' : undefined}
+						fill={color}
+						offset={{
+							x: thickness / 2,
+							y: thickness / 2 + gap,
+						}}
+						rotation={90}
+					/>
+					<Rect
+						x={center}
+						y={center}
+						width={thickness}
+						height={length * -1}
+						strokeWidth={outline}
+						stroke={outlineEnabled ? 'black' : undefined}
+						fill={color}
+						offset={{
+							x: thickness / 2,
+							y: thickness / 2 + gap,
+						}}
+						rotation={-90}
+					/>
+
+					<Rect
+						x={center}
+						y={center}
+						width={thickness}
+						height={length * -1}
+						strokeWidth={outline}
+						stroke={outlineEnabled ? 'black' : undefined}
+						fill={color}
+						offset={{
+							x: thickness / 2,
+							y: thickness / 2 + gap,
+						}}
+						visible={!tStyleEnabled}
+					/>
+					<Rect
+						x={center}
+						y={center}
+						width={thickness}
+						height={length * -1}
+						strokeWidth={outline}
+						stroke={outlineEnabled ? 'black' : undefined}
+						fill={color}
+						offset={{
+							x: thickness / 2,
+							y: thickness / 2 + gap,
+						}}
+						rotation={180}
+					/>
+
+					<Rect
+						x={center - thickness / 2}
+						y={center - thickness / 2}
+						width={thickness}
+						height={thickness}
+						fill={color}
+						visible={centerDotEnabled}
+					/>
+				</Layer>
+			</Stage>
 		</Box>
 	)
 }
@@ -203,3 +257,5 @@ export interface Crosshair {
 	~ 2.1 <= x < 3 = 2
 	... 
 */
+
+export default RenderCrosshairCanvas

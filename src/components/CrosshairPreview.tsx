@@ -1,9 +1,16 @@
+import dynamic from 'next/dynamic';
 import { copy } from '@lib/copy'
-import { Box, Text } from '@mantine/core'
+import { Box, Text, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 const csgoSharecode = require('csgo-sharecode')
 import { RenderCrosshair } from './RenderCrosshair'
-import { RenderCrosshairCanvas } from './RenderCrosshairCanvas'
+// import { RenderCrosshairCanvas } from './RenderCrosshairCanvas'
+
+const RenderCrosshairCanvas = dynamic(() => import('./RenderCrosshairCanvas'), {
+	ssr: false,
+	loading: () => <>loading...</> //TODO - loading component
+});
+
 
 type Props = {
 	crosshairCode: string
@@ -35,20 +42,28 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	}
 
 	return (
-		<Box>
-			<RenderCrosshair
-				onClick={onClick}
-				crosshair={crosshair}
-				size={100}
-			/>
-			<RenderCrosshairCanvas
-				onClick={onClick}
-				crosshair={crosshair}
-				size={100}
-			/>
+		<Box pl={150}>
+			<Group>
+				{/* <RenderCrosshair
+					onClick={onClick}
+					crosshair={crosshair}
+					size={100}
+				/> */}
+				<RenderCrosshairCanvas
+					onClick={onClick}
+					crosshair={crosshair}
+					size={100}
+				/>
+			</Group>
 			<Text>size: {crosshair.length}</Text>
 			<Text>thickness: {crosshair.thickness}</Text>
 			<Text>gap: {crosshair.gap}</Text>
+			<Text>
+				outline:{' '}
+				{(crosshair.outlineEnabled as boolean) === true
+					? crosshair.outline
+					: 'false'}
+			</Text>
 			<Text>
 				dot: {(crosshair.centerDotEnabled as boolean).toString()}
 			</Text>
