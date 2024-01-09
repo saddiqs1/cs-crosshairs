@@ -1,4 +1,4 @@
-import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic'
 import { copy } from '@lib/copy'
 import { Box, Text, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
@@ -8,9 +8,8 @@ import { RenderCrosshair } from './RenderCrosshair'
 
 const RenderCrosshairCanvas = dynamic(() => import('./RenderCrosshairCanvas'), {
 	ssr: false,
-	loading: () => <>loading...</> //TODO - loading component
-});
-
+	loading: () => <>loading...</>, //TODO - loading component
+})
 
 type Props = {
 	crosshairCode: string
@@ -42,7 +41,7 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	}
 
 	return (
-		<Box pl={150}>
+		<Box>
 			<Group>
 				{/* <RenderCrosshair
 					onClick={onClick}

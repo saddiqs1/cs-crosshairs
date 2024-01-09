@@ -1,6 +1,6 @@
 import { getColor } from '@lib/crosshairUtils'
 import { Box } from '@mantine/core'
-import { Stage, Layer, Rect } from 'react-konva'
+import { Stage, Layer, Rect, Group } from 'react-konva'
 
 type Props = {
 	crosshair: Crosshair
@@ -9,24 +9,26 @@ type Props = {
 }
 
 // https://github.com/hauptrolle/csgo-crosshair-generator/blob/master/src/components/CrosshairPreview/CrosshairPreview.js
-// TODO - copy calculations from above. See if it works. If it does work, see if it can work with svg...
+// TODO - Can the below code work with svg...
+
+const getLength = (length: number) => {
+	if (length > 2) {
+		return length * 2 + 1
+	}
+
+	return length * 2
+}
 
 const getThickness = (thickness: number) => {
 	return thickness <= 0 ? 0.5 : thickness
 }
 
-const getGap = (gap: number) => {
-	/*
-		GAP RULES:
-		~ -1.9 <= x < -1 = -2 
-		~ -0.9 <= x < 0 = -1
-		~ 0 <= x < 1 = 0 
-		~ 1.1 <= x < 2 = 1 
-		~ 2.1 <= x < 3 = 2
-		... 
-	*/
-
-	return Math.floor(gap)
+const getOutlineThickness = (outlineThickness: number) => {
+	return outlineThickness === 0
+		? 0
+		: Math.floor(outlineThickness) === 0
+		? 0.5
+		: Math.floor(outlineThickness)
 }
 
 const getCrosshairValues = (crosshair: Crosshair, size: number) => {
@@ -54,26 +56,20 @@ const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 		style,
 	} = crosshair
 
-	const actualThickness = getThickness(thickness)
-	const actualGap = getGap(gap)
+	const crosshairLength = getLength(length)
+	const crosshairWidth = getThickness(thickness) * 2
+	const crosshairGap = Math.floor(gap) + 4
+	const outlineThickness = getOutlineThickness(outline)
 
 	return {
-		length: length * 2.85,
-		gap: (actualGap + 5) * (actualThickness * 1),
+		crosshairLength,
+		crosshairWidth,
 		outlineEnabled,
-		outline,
+		crosshairGap,
 		color: getColor(color, red, green, blue, alphaEnabled, alpha),
-		thickness: actualThickness * 2.85,
+		outlineThickness,
 		centerDotEnabled,
-		splitDistance,
-		followRecoil,
-		fixedCrosshairGap,
-		innerSplitAlpha,
-		outerSplitAlpha,
-		splitSizeRatio,
 		tStyleEnabled,
-		deployedWeaponGapEnabled,
-		style,
 	}
 }
 
@@ -83,118 +79,186 @@ const RenderCrosshairCanvas: React.FC<Props> = ({
 	onClick,
 }) => {
 	const {
-		length,
-		gap,
+		crosshairLength,
+		crosshairWidth,
 		outlineEnabled,
-		outline,
+		crosshairGap,
 		color,
-		thickness,
+		outlineThickness,
 		centerDotEnabled,
-		splitDistance,
-		followRecoil,
-		fixedCrosshairGap,
-		innerSplitAlpha,
-		outerSplitAlpha,
-		splitSizeRatio,
 		tStyleEnabled,
-		deployedWeaponGapEnabled,
-		style,
 	} = getCrosshairValues(crosshair, size)
 
 	const center = size / 2
 
+	// NOTE: The order of the groups in the code below are in a specific order for a reason, to mimic the order of priority for the lines of a crosshair in CS2.
+	// i.e. from bottom to top, left line, right line, top line, bottom line and then dot.
 	return (
 		<Box
 			onClick={onClick}
 			sx={{
 				border: '1px dashed red',
 				cursor: 'pointer',
-				background: 'rgba(20, 20, 20, 0.5)',
+				background: 'rgba(250, 250, 250, 0.2)',
 			}}
 			w={size + 1}
 			h={size + 1}
 		>
 			<Stage width={size} height={size}>
 				<Layer>
-					{/* <Rect
-						x={center - 0.5}
-						width={1}
-						height={size}
-						fill={'gray'}
-					/>
-					<Rect
-						y={center - 0.5}
-						height={1}
-						width={size}
-						fill={'gray'}
-					/> */}
+					<Group>
+						{/* Left */}
+						<Group>
+							<Rect
+								x={
+									center -
+									(crosshairLength +
+										crosshairWidth / 2 +
+										crosshairGap) -
+									outlineThickness
+								}
+								y={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								width={crosshairLength + outlineThickness * 2}
+								height={crosshairWidth + outlineThickness * 2}
+								fill={'#000000'}
+								visible={outlineEnabled}
+							/>
 
-					<Rect
-						x={center}
-						y={center}
-						width={thickness}
-						height={length * -1}
-						strokeWidth={outline}
-						stroke={outlineEnabled ? 'black' : undefined}
-						fill={color}
-						offset={{
-							x: thickness / 2,
-							y: thickness / 2 + gap,
-						}}
-						rotation={90}
-					/>
-					<Rect
-						x={center}
-						y={center}
-						width={thickness}
-						height={length * -1}
-						strokeWidth={outline}
-						stroke={outlineEnabled ? 'black' : undefined}
-						fill={color}
-						offset={{
-							x: thickness / 2,
-							y: thickness / 2 + gap,
-						}}
-						rotation={-90}
-					/>
+							<Rect
+								x={
+									center -
+									(crosshairLength +
+										crosshairWidth / 2 +
+										crosshairGap)
+								}
+								y={center - crosshairWidth / 2}
+								width={crosshairLength}
+								height={crosshairWidth}
+								fill={color}
+							/>
+						</Group>
 
-					<Rect
-						x={center}
-						y={center}
-						width={thickness}
-						height={length * -1}
-						strokeWidth={outline}
-						stroke={outlineEnabled ? 'black' : undefined}
-						fill={color}
-						offset={{
-							x: thickness / 2,
-							y: thickness / 2 + gap,
-						}}
-						visible={!tStyleEnabled}
-					/>
-					<Rect
-						x={center}
-						y={center}
-						width={thickness}
-						height={length * -1}
-						strokeWidth={outline}
-						stroke={outlineEnabled ? 'black' : undefined}
-						fill={color}
-						offset={{
-							x: thickness / 2,
-							y: thickness / 2 + gap,
-						}}
-						rotation={180}
-					/>
+						{/* Right */}
+						<Group>
+							<Rect
+								x={
+									center +
+									(crosshairWidth / 2 + crosshairGap) -
+									outlineThickness
+								}
+								y={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								width={crosshairLength + outlineThickness * 2}
+								height={crosshairWidth + outlineThickness * 2}
+								fill={'#000000'}
+								visible={outlineEnabled}
+							/>
+							<Rect
+								x={center + (crosshairWidth / 2 + crosshairGap)}
+								y={center - crosshairWidth / 2}
+								width={crosshairLength}
+								height={crosshairWidth}
+								fill={color}
+							/>
+						</Group>
 
-					<Rect
-						x={center - thickness / 2}
-						y={center - thickness / 2}
-						width={thickness}
-						height={thickness}
-						fill={color}
-						visible={centerDotEnabled}
-					/>
+						{/* Top */}
+						<Group visible={!tStyleEnabled}>
+							<Rect
+								x={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								y={
+									center -
+									(crosshairLength +
+										crosshairWidth / 2 +
+										crosshairGap) -
+									outlineThickness
+								}
+								width={crosshairWidth + outlineThickness * 2}
+								height={crosshairLength + outlineThickness * 2}
+								fill={'#000000'}
+								visible={outlineEnabled}
+							/>
+							<Rect
+								x={center - crosshairWidth / 2}
+								y={
+									center -
+									(crosshairLength +
+										crosshairWidth / 2 +
+										crosshairGap)
+								}
+								width={crosshairWidth}
+								height={crosshairLength}
+								fill={color}
+							/>
+						</Group>
+
+						{/* Bottom */}
+						<Group>
+							<Rect
+								x={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								y={
+									center +
+									(crosshairWidth / 2 + crosshairGap) -
+									outlineThickness
+								}
+								width={crosshairWidth + outlineThickness * 2}
+								height={crosshairLength + outlineThickness * 2}
+								fill={'#000000'}
+								visible={outlineEnabled}
+							/>
+
+							<Rect
+								x={center - crosshairWidth / 2}
+								y={center + (crosshairWidth / 2 + crosshairGap)}
+								width={crosshairWidth}
+								height={crosshairLength}
+								fill={color}
+							/>
+						</Group>
+
+						{/* Dot */}
+						<Group visible={centerDotEnabled}>
+							<Rect
+								x={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								y={
+									center -
+									crosshairWidth / 2 -
+									outlineThickness
+								}
+								width={crosshairWidth + outlineThickness * 2}
+								height={crosshairWidth + outlineThickness * 2}
+								fill={'#000000'}
+								visible={outlineEnabled}
+							/>
+
+							<Rect
+								x={center - crosshairWidth / 2}
+								y={center - crosshairWidth / 2}
+								width={crosshairWidth}
+								height={crosshairWidth}
+								fill={color}
+							/>
+						</Group>
+					</Group>
 				</Layer>
 			</Stage>
 		</Box>
@@ -238,24 +302,5 @@ export interface Crosshair {
 	 */
 	style: number
 }
-
-/*
-	gap: -5
-	outcome = 0
-
-	gap: 0
-	outcome = 5
-
-	gap: 5
-	outcome = 10
-
-	GAP RULES:
-	~ -1.9 <= x <= -1 = -2 
-	~ -0.9 <= x < 0 = -1
-	~ 0 <= x < 1 = 0 
-	~ 1.1 <= x < 2 = 1 
-	~ 2.1 <= x < 3 = 2
-	... 
-*/
 
 export default RenderCrosshairCanvas
