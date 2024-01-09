@@ -9,3 +9,10 @@ This is a basic [Next.js](https://nextjs.org/) template with [Mantine Core & Not
     ```
 
 2. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### TODO
+
+-   [ ] Fix `csgo-sharecode` package import
+-   [ ] Show crosshair style within preview
+-   [ ] toggle between 16:9 vs 4:3 for crosshair preview
+-   [ ] allow user to save crosshair

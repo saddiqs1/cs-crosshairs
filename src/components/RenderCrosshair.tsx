@@ -215,22 +215,3 @@ export interface Crosshair {
 	 */
 	style: number
 }
-
-/*
-	gap: -5
-	outcome = 0
-
-	gap: 0
-	outcome = 5
-
-	gap: 5
-	outcome = 10
-
-	GAP RULES:
-	~ -1.9 <= x <= -1 = -2 
-	~ -0.9 <= x < 0 = -1
-	~ 0 <= x < 1 = 0 
-	~ 1.1 <= x < 2 = 1 
-	~ 2.1 <= x < 3 = 2
-	... 
-*/
