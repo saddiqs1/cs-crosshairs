@@ -43,7 +43,7 @@ const getOutlineThickness = (outlineThickness: number) => {
 		: Math.floor(outlineThickness)
 }
 
-export const getCrosshairValues = (crosshair: Crosshair, size: number) => {
+export const getCrosshairValues = (crosshair: Crosshair, scale: number) => {
 	const {
 		length,
 		red,
@@ -68,10 +68,10 @@ export const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 		style,
 	} = crosshair
 
-	const crosshairLength = getLength(length)
-	const crosshairWidth = getThickness(thickness) * 2
-	const crosshairGap = Math.floor(gap) + 4
-	const outlineThickness = getOutlineThickness(outline)
+	const crosshairLength = getLength(length) * scale
+	const crosshairWidth = getThickness(thickness) * 2 * scale
+	const crosshairGap = (Math.floor(gap) + 4) * scale
+	const outlineThickness = getOutlineThickness(outline) * scale
 
 	return {
 		crosshairLength,

@@ -21,7 +21,7 @@ export const RenderCrosshair: React.FC<Props> = ({
 		outlineThickness,
 		centerDotEnabled,
 		tStyleEnabled,
-	} = getCrosshairValues(crosshair, size)
+	} = getCrosshairValues(crosshair, size / 100)
 
 	const center = size / 2
 
