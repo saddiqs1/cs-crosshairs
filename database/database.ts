@@ -9,6 +9,7 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 export interface Crosshairs {
   crosshair: string;
   id: Generated<number>;
+  name: string;
   user_id: number | null;
 }
 
