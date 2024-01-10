@@ -16,7 +16,7 @@ export interface Users {
   created_at: Generated<Timestamp>;
   id: Generated<number>;
   latest_login_at: Timestamp | null;
-  steam_uid: string | null;
+  steam_uid: string;
 }
 
 export interface DB {
