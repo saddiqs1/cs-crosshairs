@@ -66,8 +66,7 @@ This is a basic [Next.js](https://nextjs.org/) template with [Mantine Core & Not
 -   [ ] Show crosshair style within preview
 -   [ ] toggle between 16:9 vs 4:3 for crosshair preview
 -   [ ] allow user to save crosshair
+-   [ ] validation on converter page
 
--   [ ] connect to DB
--   [x] create migrations system
 -   [ ] create login
 -   [ ] create ui for entering in and saving crosshairs
