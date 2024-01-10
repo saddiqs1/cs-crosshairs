@@ -1,10 +1,5 @@
+import { User } from '@my-types/user'
 import { SessionOptions } from 'iron-session'
-
-export interface User {
-	id: number
-	username: string
-	avatarUrl: string
-}
 
 export const sessionOptions: SessionOptions = {
 	password: process.env.SESSION_SECRET ?? '',

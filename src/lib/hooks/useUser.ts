@@ -1,9 +1,9 @@
-import { User } from '@lib/auth/session'
 import fetcher from '@lib/fetcher'
+import { User } from '@my-types/user'
 import useSWRImmutable from 'swr/immutable'
 
 export function useUser() {
-	const { data, isLoading, error } = useSWRImmutable<{
+	const { data, isLoading } = useSWRImmutable<{
 		message: User
 		success: boolean
 	}>(`/api/auth/user`, fetcher)
@@ -13,5 +13,5 @@ export function useUser() {
 		user = data.message
 	}
 
-	return { user, isLoading, error }
+	return { user, isLoading }
 }

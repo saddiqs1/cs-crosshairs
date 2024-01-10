@@ -5,7 +5,9 @@ import { IconViewfinder } from '@tabler/icons-react'
 import { HeaderLink } from './HeaderLink'
 import { useRouter } from 'next/router'
 import { LoginButton } from './LoginButton'
-import { useUser } from '@lib/hooks/useUser'
+import { useContext } from 'react'
+import { UserContext } from '@contexts/UserContext'
+import { UserAvatar } from './LogoutButton'
 
 const LINKS = [
 	{ link: '/', label: 'Converter' },
@@ -16,7 +18,7 @@ type Props = {}
 
 export const Header: React.FC<Props> = ({}) => {
 	const router = useRouter()
-	// const { user, isLoading, error } = useUser()
+	const { user, isLoading } = useContext(UserContext)
 
 	return (
 		<MantineHeader height={56} withBorder>
@@ -41,7 +43,7 @@ export const Header: React.FC<Props> = ({}) => {
 							isActive={router.pathname === link.link}
 						/>
 					))}
-					<LoginButton />
+					{user && !isLoading ? <UserAvatar /> : <LoginButton />}
 				</Group>
 			</Container>
 		</MantineHeader>
