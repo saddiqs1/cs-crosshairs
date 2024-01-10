@@ -15,6 +15,7 @@
 		"incremental": true,
 		"typeRoots": ["./src/typings"],
 		"paths": {
+			"@my-types/*": ["./src/types/*"],
 			"@*": ["./src/*"]
 		}
 	},

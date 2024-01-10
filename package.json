@@ -8,7 +8,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"db:build": "rimraf distDatabase && tsc --project tsconfig-database.json",
-		"db:generate": "dotenv -e .env.local -- kysely-codegen --dialect postgres --out-file ./src/typings/generated/database.ts && node scripts/copyFile ./src/typings/generated/database.ts ./database/database.ts",
+		"db:generate": "dotenv -e .env.local -- kysely-codegen --dialect postgres --out-file ./src/types/generated/database.ts && node scripts/copyFile ./src/types/generated/database.ts ./database/database.ts",
 		"db:seed": "npm run db:build && node distDatabase/seed.js",
 		"migrate": "npm run db:build && node distDatabase/index.js latest",
 		"migrate:fresh": "npm run db:build && node distDatabase/index.js fresh",
