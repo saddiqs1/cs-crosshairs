@@ -1,2 +1,2 @@
-NEXT_PUBLIC_CLIENT_VAR=
-SERVER_VAR=
+DATABASE_URL="postgresql://user:password@localhost:5432/cs-crosshairs"
+NODE_ENV="development" # DO NOT CHANGE THIS
