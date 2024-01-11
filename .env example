@@ -1,2 +1,6 @@
-NEXT_PUBLIC_CLIENT_VAR=
-SERVER_VAR=
+DATABASE_URL="postgresql://user:password@localhost:5432/cs-crosshairs"
+NODE_ENV="development" # DO NOT CHANGE THIS
+
+NEXT_PUBLIC_DOMAIN=http://localhost:3000
+STEAM_API_KEY= # Get from https://steamcommunity.com/dev/apikey
+SESSION_SECRET=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789

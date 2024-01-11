@@ -1,4 +1,35 @@
-import { Crosshair } from 'csgo-sharecode'
+import { copy } from '@lib/copy'
+import { notifications } from '@mantine/notifications'
+import { Crosshair } from '@my-types/crosshair'
+const csgoSharecode = require('csgo-sharecode')
+
+export const copyCommands = (crosshairCode: string) => {
+	try {
+		const crosshairCommands = csgoSharecode
+			.crosshairToConVars(
+				csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+			)
+			.replaceAll('\n', ';')
+
+		copy(crosshairCommands)
+
+		notifications.show({
+			title: 'Crosshair Copied',
+			message: 'Crosshair is copied to your clipboard',
+			color: 'green',
+		})
+	} catch (error: any) {
+		notifications.show({
+			title: 'Error Copying Crosshair',
+			message: 'Crosshair input is in an incorrect format',
+			color: 'red',
+		})
+	}
+}
+
+export const getCrosshair = (crosshairCode: string): Crosshair => {
+	return csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+}
 
 const getColor = (
 	colorCode: number,
@@ -8,19 +39,26 @@ const getColor = (
 	alphaEnabled: boolean,
 	alpha: number
 ) => {
+	let colour = ''
+	const alphaDecimal = alphaEnabled ? alpha / 255 : 1
+
 	if (colorCode === 1) {
-		return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
 	} else if (colorCode === 2) {
-		return `rgb(250, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(250, 250, 46, ${alphaDecimal})`
 	} else if (colorCode === 3) {
-		return `rgb(46, 46, 250, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 46, 250, ${alphaDecimal})`
 	} else if (colorCode === 4) {
-		return `rgb(46, 250, 250, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 250, 250, ${alphaDecimal})`
 	} else if (colorCode === 5) {
-		return `rgba(${r}, ${g}, ${b}, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgba(${r}, ${g}, ${b}, ${alphaDecimal})`
+	} else {
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
 	}
 
-	return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+	const outlineColour = `rgb(0, 0, 0, ${alphaDecimal})`
+
+	return { colour, outlineColour }
 }
 
 const getLength = (length: number) => {
@@ -43,7 +81,7 @@ const getOutlineThickness = (outlineThickness: number) => {
 		: Math.floor(outlineThickness)
 }
 
-export const getCrosshairValues = (crosshair: Crosshair, size: number) => {
+export const getCrosshairValues = (crosshair: Crosshair, scale: number) => {
 	const {
 		length,
 		red,
@@ -68,17 +106,26 @@ export const getCrosshairValues = (crosshair: Crosshair, size: number) => {
 		style,
 	} = crosshair
 
-	const crosshairLength = getLength(length)
-	const crosshairWidth = getThickness(thickness) * 2
-	const crosshairGap = Math.floor(gap) + 4
-	const outlineThickness = getOutlineThickness(outline)
+	const crosshairLength = getLength(length) * scale
+	const crosshairWidth = getThickness(thickness) * 2 * scale
+	const crosshairGap = (Math.floor(gap) + 4) * scale
+	const outlineThickness = getOutlineThickness(outline) * scale
+	const { colour, outlineColour } = getColor(
+		color,
+		red,
+		green,
+		blue,
+		alphaEnabled,
+		alpha
+	)
 
 	return {
 		crosshairLength,
 		crosshairWidth,
 		outlineEnabled,
 		crosshairGap,
-		color: getColor(color, red, green, blue, alphaEnabled, alpha),
+		color: colour,
+		outlineColour,
 		outlineThickness,
 		centerDotEnabled,
 		tStyleEnabled,

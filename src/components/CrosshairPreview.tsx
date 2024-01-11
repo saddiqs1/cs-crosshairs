@@ -1,58 +1,53 @@
-import { copy } from '@lib/copy'
-import { Box, Text } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
-const csgoSharecode = require('csgo-sharecode')
-import { Crosshair, RenderCrosshair } from './RenderCrosshair'
+import { Box, Stack, Text } from '@mantine/core'
+import { RenderCrosshair } from './RenderCrosshair'
+import { copyCommands, getCrosshair } from '@lib/crosshairUtils'
 
 type Props = {
 	crosshairCode: string
+	name: string
 }
 
-export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
-	const crosshair: Crosshair =
-		csgoSharecode.decodeCrosshairShareCode(crosshairCode)
-
-	const onClick = () => {
-		try {
-			const crosshairCommands = csgoSharecode
-				.crosshairToConVars(crosshair)
-				.replaceAll('\n', ';')
-
-			copy(crosshairCommands)
-
-			notifications.show({
-				title: 'Crosshair Copied',
-				message: 'Crosshair is copied to your clipboard',
-				color: 'green',
-			})
-		} catch (error: any) {
-			notifications.show({
-				title: 'Error Copying Crosshair',
-				message: 'Crosshair input is in an incorrect format',
-				color: 'red',
-			})
-		}
-	}
-
+export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 	return (
-		<Box>
+		<Stack
+			spacing={6}
+			p={'sm'}
+			bg='dark.5'
+			sx={(theme) => ({
+				borderRadius: theme.radius.md,
+				transition: 'shadow 150ms ease, transform 100ms ease;',
+				'&:hover': {
+					cursor: 'pointer',
+					boxShadow: theme.shadows.md,
+					transform: `scale(1.05)`,
+					background: theme.colors.dark[4],
+				},
+			})}
+			onClick={() => copyCommands(crosshairCode)}
+			title={`Copy ${name}`}
+		>
 			<RenderCrosshair
-				onClick={onClick}
-				crosshair={crosshair}
+				crosshair={getCrosshair(crosshairCode)}
 				size={100}
 			/>
-			<Text>size: {crosshair.length}</Text>
-			<Text>thickness: {crosshair.thickness}</Text>
-			<Text>gap: {crosshair.gap}</Text>
-			<Text>
-				outline:{' '}
-				{(crosshair.outlineEnabled as boolean) === true
-					? crosshair.outline
-					: 'false'}
-			</Text>
-			<Text>
-				dot: {(crosshair.centerDotEnabled as boolean).toString()}
-			</Text>
-		</Box>
+			{name.length > 0 ? (
+				<Text
+					ta='center'
+					c={'dimmed'}
+					size={'sm'}
+					lh={1.5}
+					sx={{
+						width: 100,
+						whiteSpace: 'nowrap',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+					}}
+				>
+					{name}
+				</Text>
+			) : (
+				<Box h={22} />
+			)}
+		</Stack>
 	)
 }
