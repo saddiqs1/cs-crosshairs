@@ -8,19 +8,26 @@ const getColor = (
 	alphaEnabled: boolean,
 	alpha: number
 ) => {
+	let colour = ''
+	const alphaDecimal = alphaEnabled ? alpha / 255 : 1
+
 	if (colorCode === 1) {
-		return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
 	} else if (colorCode === 2) {
-		return `rgb(250, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(250, 250, 46, ${alphaDecimal})`
 	} else if (colorCode === 3) {
-		return `rgb(46, 46, 250, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 46, 250, ${alphaDecimal})`
 	} else if (colorCode === 4) {
-		return `rgb(46, 250, 250, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgb(46, 250, 250, ${alphaDecimal})`
 	} else if (colorCode === 5) {
-		return `rgba(${r}, ${g}, ${b}, ${alphaEnabled ? alpha / 255 : 1})`
+		colour = `rgba(${r}, ${g}, ${b}, ${alphaDecimal})`
+	} else {
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
 	}
 
-	return `rgb(46, 250, 46, ${alphaEnabled ? alpha / 255 : 1})`
+	const outlineColour = `rgb(0, 0, 0, ${alphaDecimal})`
+
+	return { colour, outlineColour }
 }
 
 const getLength = (length: number) => {
@@ -72,13 +79,22 @@ export const getCrosshairValues = (crosshair: Crosshair, scale: number) => {
 	const crosshairWidth = getThickness(thickness) * 2 * scale
 	const crosshairGap = (Math.floor(gap) + 4) * scale
 	const outlineThickness = getOutlineThickness(outline) * scale
+	const { colour, outlineColour } = getColor(
+		color,
+		red,
+		green,
+		blue,
+		alphaEnabled,
+		alpha
+	)
 
 	return {
 		crosshairLength,
 		crosshairWidth,
 		outlineEnabled,
 		crosshairGap,
-		color: getColor(color, red, green, blue, alphaEnabled, alpha),
+		color: colour,
+		outlineColour,
 		outlineThickness,
 		centerDotEnabled,
 		tStyleEnabled,

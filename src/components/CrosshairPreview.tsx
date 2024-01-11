@@ -1,14 +1,15 @@
 import { copy } from '@lib/copy'
-import { Box, Text } from '@mantine/core'
+import { Stack, Text } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 const csgoSharecode = require('csgo-sharecode')
 import { Crosshair, RenderCrosshair } from './RenderCrosshair'
 
 type Props = {
 	crosshairCode: string
+	name: string
 }
 
-export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
+export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 	const crosshair: Crosshair =
 		csgoSharecode.decodeCrosshairShareCode(crosshairCode)
 
@@ -35,24 +36,26 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode }) => {
 	}
 
 	return (
-		<Box>
-			<RenderCrosshair
-				onClick={onClick}
-				crosshair={crosshair}
-				size={100}
-			/>
-			<Text>size: {crosshair.length}</Text>
-			<Text>thickness: {crosshair.thickness}</Text>
-			<Text>gap: {crosshair.gap}</Text>
-			<Text>
-				outline:{' '}
-				{(crosshair.outlineEnabled as boolean) === true
-					? crosshair.outline
-					: 'false'}
+		<Stack
+			spacing={6}
+			p={'sm'}
+			bg='dark.5'
+			sx={(theme) => ({
+				borderRadius: theme.radius.md,
+				transition: 'shadow 150ms ease, transform 100ms ease;',
+				'&:hover': {
+					cursor: 'pointer',
+					boxShadow: theme.shadows.md,
+					transform: `scale(1.05)`,
+					background: theme.colors.dark[4],
+				},
+			})}
+			onClick={onClick}
+		>
+			<RenderCrosshair crosshair={crosshair} size={100} />
+			<Text ta='center' size={'sm'} c={'dimmed'}>
+				{name}
 			</Text>
-			<Text>
-				dot: {(crosshair.centerDotEnabled as boolean).toString()}
-			</Text>
-		</Box>
+		</Stack>
 	)
 }

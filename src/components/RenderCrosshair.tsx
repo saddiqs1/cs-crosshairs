@@ -1,23 +1,18 @@
-import { Box } from '@mantine/core'
 import { getCrosshairValues } from '@lib/crosshairUtils'
 
 type Props = {
 	crosshair: Crosshair
 	size: number
-	onClick: () => void
 }
 
-export const RenderCrosshair: React.FC<Props> = ({
-	crosshair,
-	size,
-	onClick,
-}) => {
+export const RenderCrosshair: React.FC<Props> = ({ crosshair, size }) => {
 	const {
 		crosshairLength,
 		crosshairWidth,
 		outlineEnabled,
 		crosshairGap,
 		color,
+		outlineColour,
 		outlineThickness,
 		centerDotEnabled,
 		tStyleEnabled,
@@ -28,153 +23,138 @@ export const RenderCrosshair: React.FC<Props> = ({
 	// NOTE: The order of the groups in the code below are in a specific order for a reason, to mimic the order of priority for the lines of a crosshair in CS2.
 	// i.e. from bottom to top, left line, right line, top line, bottom line and then dot.
 	return (
-		<Box
-			onClick={onClick}
-			sx={{
-				border: '1px dashed red',
-				cursor: 'pointer',
-				background: 'rgba(250, 250, 250, 0.2)',
-			}}
-			w={size + 1}
-			h={size + 1}
+		<svg
+			viewBox={`0 0 ${size} ${size}`}
+			width={size}
+			height={size}
+			xmlns='http://www.w3.org/2000/svg'
 		>
-			<svg
-				viewBox={`0 0 ${size} ${size}`}
-				width={size}
-				height={size}
-				xmlns='http://www.w3.org/2000/svg'
-			>
-				{/* Left */}
-				<g>
-					{outlineEnabled && (
-						<rect
-							x={
-								center -
-								(crosshairLength +
-									crosshairWidth / 2 +
-									crosshairGap) -
-								outlineThickness
-							}
-							y={center - crosshairWidth / 2 - outlineThickness}
-							width={crosshairLength + outlineThickness * 2}
-							height={crosshairWidth + outlineThickness * 2}
-							fill={'#000000'}
-						/>
-					)}
+			{/* Left */}
+			<g>
+				{outlineEnabled && (
 					<rect
 						x={
 							center -
 							(crosshairLength +
 								crosshairWidth / 2 +
-								crosshairGap)
+								crosshairGap) -
+							outlineThickness
 						}
-						y={center - crosshairWidth / 2}
-						width={crosshairLength}
-						height={crosshairWidth}
-						fill={color}
+						y={center - crosshairWidth / 2 - outlineThickness}
+						width={crosshairLength + outlineThickness * 2}
+						height={crosshairWidth + outlineThickness * 2}
+						fill={outlineColour}
 					/>
-				</g>
+				)}
+				<rect
+					x={
+						center -
+						(crosshairLength + crosshairWidth / 2 + crosshairGap)
+					}
+					y={center - crosshairWidth / 2}
+					width={crosshairLength}
+					height={crosshairWidth}
+					fill={color}
+				/>
+			</g>
 
-				{/* Right */}
-				<g>
-					{outlineEnabled && (
-						<rect
-							x={
-								center +
-								(crosshairWidth / 2 + crosshairGap) -
-								outlineThickness
-							}
-							y={center - crosshairWidth / 2 - outlineThickness}
-							width={crosshairLength + outlineThickness * 2}
-							height={crosshairWidth + outlineThickness * 2}
-							fill={'#000000'}
-						/>
-					)}
+			{/* Right */}
+			<g>
+				{outlineEnabled && (
 					<rect
-						x={center + (crosshairWidth / 2 + crosshairGap)}
-						y={center - crosshairWidth / 2}
-						width={crosshairLength}
-						height={crosshairWidth}
-						fill={color}
+						x={
+							center +
+							(crosshairWidth / 2 + crosshairGap) -
+							outlineThickness
+						}
+						y={center - crosshairWidth / 2 - outlineThickness}
+						width={crosshairLength + outlineThickness * 2}
+						height={crosshairWidth + outlineThickness * 2}
+						fill={outlineColour}
 					/>
-				</g>
+				)}
+				<rect
+					x={center + (crosshairWidth / 2 + crosshairGap)}
+					y={center - crosshairWidth / 2}
+					width={crosshairLength}
+					height={crosshairWidth}
+					fill={color}
+				/>
+			</g>
 
-				{/* Top */}
-				<g visibility={tStyleEnabled ? 'hidden' : 'show'}>
-					{outlineEnabled && (
-						<rect
-							x={center - crosshairWidth / 2 - outlineThickness}
-							y={
-								center -
-								(crosshairLength +
-									crosshairWidth / 2 +
-									crosshairGap) -
-								outlineThickness
-							}
-							width={crosshairWidth + outlineThickness * 2}
-							height={crosshairLength + outlineThickness * 2}
-							fill={'#000000'}
-						/>
-					)}
+			{/* Top */}
+			<g visibility={tStyleEnabled ? 'hidden' : 'show'}>
+				{outlineEnabled && (
 					<rect
-						x={center - crosshairWidth / 2}
+						x={center - crosshairWidth / 2 - outlineThickness}
 						y={
 							center -
 							(crosshairLength +
 								crosshairWidth / 2 +
-								crosshairGap)
+								crosshairGap) -
+							outlineThickness
 						}
-						width={crosshairWidth}
-						height={crosshairLength}
-						fill={color}
+						width={crosshairWidth + outlineThickness * 2}
+						height={crosshairLength + outlineThickness * 2}
+						fill={outlineColour}
 					/>
-				</g>
+				)}
+				<rect
+					x={center - crosshairWidth / 2}
+					y={
+						center -
+						(crosshairLength + crosshairWidth / 2 + crosshairGap)
+					}
+					width={crosshairWidth}
+					height={crosshairLength}
+					fill={color}
+				/>
+			</g>
 
-				{/* Bottom */}
-				<g>
-					{outlineEnabled && (
-						<rect
-							x={center - crosshairWidth / 2 - outlineThickness}
-							y={
-								center +
-								(crosshairWidth / 2 + crosshairGap) -
-								outlineThickness
-							}
-							width={crosshairWidth + outlineThickness * 2}
-							height={crosshairLength + outlineThickness * 2}
-							fill={'#000000'}
-						/>
-					)}
+			{/* Bottom */}
+			<g>
+				{outlineEnabled && (
 					<rect
-						x={center - crosshairWidth / 2}
-						y={center + (crosshairWidth / 2 + crosshairGap)}
-						width={crosshairWidth}
-						height={crosshairLength}
-						fill={color}
+						x={center - crosshairWidth / 2 - outlineThickness}
+						y={
+							center +
+							(crosshairWidth / 2 + crosshairGap) -
+							outlineThickness
+						}
+						width={crosshairWidth + outlineThickness * 2}
+						height={crosshairLength + outlineThickness * 2}
+						fill={outlineColour}
 					/>
-				</g>
+				)}
+				<rect
+					x={center - crosshairWidth / 2}
+					y={center + (crosshairWidth / 2 + crosshairGap)}
+					width={crosshairWidth}
+					height={crosshairLength}
+					fill={color}
+				/>
+			</g>
 
-				{/* Dot */}
-				<g visibility={centerDotEnabled ? 'show' : 'hidden'}>
-					{outlineEnabled && (
-						<rect
-							x={center - crosshairWidth / 2 - outlineThickness}
-							y={center - crosshairWidth / 2 - outlineThickness}
-							width={crosshairWidth + outlineThickness * 2}
-							height={crosshairWidth + outlineThickness * 2}
-							fill={'#000000'}
-						/>
-					)}
+			{/* Dot */}
+			<g visibility={centerDotEnabled ? 'show' : 'hidden'}>
+				{outlineEnabled && (
 					<rect
-						x={center - crosshairWidth / 2}
-						y={center - crosshairWidth / 2}
-						width={crosshairWidth}
-						height={crosshairWidth}
-						fill={color}
+						x={center - crosshairWidth / 2 - outlineThickness}
+						y={center - crosshairWidth / 2 - outlineThickness}
+						width={crosshairWidth + outlineThickness * 2}
+						height={crosshairWidth + outlineThickness * 2}
+						fill={outlineColour}
 					/>
-				</g>
-			</svg>
-		</Box>
+				)}
+				<rect
+					x={center - crosshairWidth / 2}
+					y={center - crosshairWidth / 2}
+					width={crosshairWidth}
+					height={crosshairWidth}
+					fill={color}
+				/>
+			</g>
+		</svg>
 	)
 }
 
