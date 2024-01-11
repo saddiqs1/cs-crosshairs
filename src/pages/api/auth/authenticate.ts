@@ -3,8 +3,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getIronSession } from 'iron-session'
 import { steamAuth } from '@lib/auth/steamAuth'
-import { User, sessionOptions } from '@lib/auth/session'
+import { sessionOptions } from '@lib/auth/session'
 import db from '@lib/kysely'
+import { User } from '@my-types/user'
 
 export default async function handler(
 	req: NextApiRequest,

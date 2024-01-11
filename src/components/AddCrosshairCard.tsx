@@ -39,7 +39,7 @@ export const AddCrosshairCard: React.FC<Props> = ({}) => {
 				onClose={close}
 				title={<Text fw={800}>Add Crosshair</Text>}
 			>
-				<AddCrosshairForm />
+				<AddCrosshairForm onComplete={close} />
 			</Modal>
 		</>
 	)

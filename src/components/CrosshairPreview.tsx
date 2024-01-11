@@ -1,6 +1,6 @@
-import { Stack, Text } from '@mantine/core'
+import { Box, Stack, Text } from '@mantine/core'
 import { RenderCrosshair } from './RenderCrosshair'
-import { useCrosshair } from '@lib/hooks/useCrosshair'
+import { copyCommands, getCrosshair } from '@lib/crosshairUtils'
 
 type Props = {
 	crosshairCode: string
@@ -8,8 +8,6 @@ type Props = {
 }
 
 export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
-	const { copyCommands, getCrosshair } = useCrosshair()
-
 	return (
 		<Stack
 			spacing={6}
@@ -32,19 +30,24 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 				crosshair={getCrosshair(crosshairCode)}
 				size={100}
 			/>
-			<Text
-				ta='center'
-				c={'dimmed'}
-				size={'sm'}
-				sx={{
-					width: 100,
-					whiteSpace: 'nowrap',
-					overflow: 'hidden',
-					textOverflow: 'ellipsis',
-				}}
-			>
-				{name}
-			</Text>
+			{name.length > 0 ? (
+				<Text
+					ta='center'
+					c={'dimmed'}
+					size={'sm'}
+					lh={1.5}
+					sx={{
+						width: 100,
+						whiteSpace: 'nowrap',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+					}}
+				>
+					{name}
+				</Text>
+			) : (
+				<Box h={22} />
+			)}
 		</Stack>
 	)
 }

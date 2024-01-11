@@ -1,36 +1,22 @@
-import { copy } from '@lib/copy'
-import { notifications } from '@mantine/notifications'
-import { Crosshair } from '@my-types/crosshair'
-const csgoSharecode = require('csgo-sharecode')
+import fetcher from '@lib/fetcher'
+import { GetCrosshairResponse } from '@my-types/api-responses/Crosshair'
+import { DBTypes } from '@my-types/database'
+import useSWRImmutable from 'swr/immutable'
 
 export function useCrosshair() {
-	const copyCommands = (crosshairCode: string) => {
-		try {
-			const crosshairCommands = csgoSharecode
-				.crosshairToConVars(
-					csgoSharecode.decodeCrosshairShareCode(crosshairCode)
-				)
-				.replaceAll('\n', ';')
+	const { data, isLoading, mutate } = useSWRImmutable<GetCrosshairResponse>(
+		`/api/crosshair`,
+		fetcher
+	)
 
-			copy(crosshairCommands)
-
-			notifications.show({
-				title: 'Crosshair Copied',
-				message: 'Crosshair is copied to your clipboard',
-				color: 'green',
-			})
-		} catch (error: any) {
-			notifications.show({
-				title: 'Error Copying Crosshair',
-				message: 'Crosshair input is in an incorrect format',
-				color: 'red',
-			})
-		}
+	let crosshairs: DBTypes['crosshairs'][] = []
+	if (data && data.success) {
+		crosshairs = data.message
 	}
 
-	const getCrosshair = (crosshairCode: string): Crosshair => {
-		return csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+	return {
+		crosshairs,
+		isCrosshairsLoading: isLoading,
+		mutateCrosshairs: mutate,
 	}
-
-	return { copyCommands, getCrosshair }
 }

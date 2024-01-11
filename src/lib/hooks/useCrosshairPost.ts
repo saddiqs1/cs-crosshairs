@@ -1,4 +1,5 @@
 import { AddCrosshairFormValues } from '@components/AddCrosshairForm'
+import { PostCrosshairResponse } from '@my-types/api-responses/Crosshair'
 import useSWRMutation from 'swr/mutation'
 
 async function postRequest(
@@ -11,13 +12,7 @@ async function postRequest(
 		headers: {
 			'Content-Type': 'application/json',
 		},
-	}).then(
-		(res) =>
-			res.json() as Promise<{
-				message: string
-				success: boolean
-			}>
-	)
+	}).then((res) => res.json() as Promise<PostCrosshairResponse>)
 }
 
 export function useCrosshairPost() {

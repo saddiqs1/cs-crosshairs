@@ -1,5 +1,5 @@
-import { AddCrosshairCard } from '@components/AddCrosshairCard'
 import { CrosshairPreview } from '@components/CrosshairPreview'
+import { UserCrosshairs } from '@components/UserCrosshairs'
 import { UserContext } from '@contexts/UserContext'
 import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
 import { useContext } from 'react'
@@ -19,11 +19,6 @@ const SHOOBIE_CROSSHAIR_CODES = [
 		name: 'Vertigo Pugger',
 	},
 ]
-
-/*
-	TODO:
-	complete journey of user who is logged in
-*/
 
 export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
@@ -73,33 +68,11 @@ export default function Manager() {
 							Welcome, {user.username}!
 						</Text>
 						<Text ta={'center'} c={'dimmed'}>
-							Click on a card below to copy the console commands
-							for it.
+							Add crosshairs, and then click on a card below to
+							copy the console commands for it.
 						</Text>
 					</Stack>
-					<Flex
-						justify={'center'}
-						align={'end'}
-						gap={'xl'}
-						wrap={'wrap'}
-					>
-						<Flex
-							justify={'center'}
-							align={'end'}
-							gap={'xl'}
-							wrap={'wrap'}
-						>
-							{/* TODO - retrieve user crosshair codes here */}
-							{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
-								<CrosshairPreview
-									crosshairCode={c.crosshairCode}
-									name={c.name}
-									key={i}
-								/>
-							))}
-							<AddCrosshairCard />
-						</Flex>
-					</Flex>
+					<UserCrosshairs />
 				</>
 			)}
 		</Stack>

@@ -4,8 +4,11 @@ import { useForm, zodResolver } from '@mantine/form'
 import { useCrosshairPost } from '@lib/hooks/useCrosshairPost'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX, IconCrosshair } from '@tabler/icons-react'
+import { useCrosshair } from '@lib/hooks/useCrosshair'
 
-type Props = {}
+type Props = {
+	onComplete: () => void
+}
 
 const crosshairCodeRegex =
 	/CSGO-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}/
@@ -19,8 +22,9 @@ const formSchema = z.object({
 
 export type AddCrosshairFormValues = z.infer<typeof formSchema>
 
-export const AddCrosshairForm: React.FC<Props> = ({}) => {
+export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 	const { postCrosshair, isUploadingCrosshair } = useCrosshairPost()
+	const { mutateCrosshairs } = useCrosshair()
 	const form = useForm<AddCrosshairFormValues>({
 		initialValues: {
 			name: '',
@@ -41,7 +45,8 @@ export const AddCrosshairForm: React.FC<Props> = ({}) => {
 			color: res?.success ? 'green' : 'red',
 		})
 
-		// mutateCrosshairs(); // TODO - create crosshair hook
+		mutateCrosshairs()
+		onComplete()
 	}
 
 	const handleInvalidForm = (errors: typeof form.errors) => {

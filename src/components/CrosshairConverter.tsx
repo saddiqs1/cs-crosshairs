@@ -1,4 +1,4 @@
-import { useCrosshair } from '@lib/hooks/useCrosshair'
+import { copyCommands } from '@lib/crosshairUtils'
 import { Button, TextInput, Flex } from '@mantine/core'
 import { useState } from 'react'
 
@@ -6,7 +6,6 @@ type Props = {}
 
 export const CrosshairConverter: React.FC<Props> = ({}) => {
 	const [crosshairCode, setCrosshairCode] = useState('')
-	const { copyCommands } = useCrosshair()
 
 	const onCopy = () => {
 		copyCommands(crosshairCode)

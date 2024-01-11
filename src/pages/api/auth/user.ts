@@ -1,7 +1,8 @@
 // /api/auth/user
 
-import { User, sessionOptions } from '@lib/auth/session'
+import { sessionOptions } from '@lib/auth/session'
 import db from '@lib/kysely'
+import { User } from '@my-types/user'
 import { getIronSession } from 'iron-session'
 import { sql } from 'kysely'
 import { NextApiRequest, NextApiResponse } from 'next'
