@@ -1,10 +1,10 @@
-import { AddCrosshairFormValues } from '@components/AddCrosshairForm'
+import { EditCrosshairFormValues } from '@components/EditCrosshairsForm'
 import { PostCrosshairResponse } from '@my-types/api-responses/Crosshair'
 import useSWRMutation from 'swr/mutation'
 
 async function postRequest(
 	url: RequestInfo,
-	{ arg }: { arg: AddCrosshairFormValues }
+	{ arg }: { arg: EditCrosshairFormValues }
 ) {
 	return fetch(url, {
 		method: 'POST',
@@ -21,5 +21,5 @@ export function useCrosshairPost() {
 		postRequest
 	)
 
-	return { postCrosshair: trigger, isUploadingCrosshair: isMutating }
+	return { updateCrosshairs: trigger, isCrosshairsUpdating: isMutating }
 }

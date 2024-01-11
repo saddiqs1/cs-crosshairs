@@ -1,7 +1,7 @@
 import { Button, Loader, Stack, TextInput } from '@mantine/core'
 import { z } from 'zod'
 import { useForm, zodResolver } from '@mantine/form'
-import { useCrosshairPost } from '@lib/hooks/useCrosshairPost'
+import { useAddCrosshairPost } from '@lib/hooks/useAddCrosshairPost'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX, IconCrosshair } from '@tabler/icons-react'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
@@ -23,7 +23,7 @@ const formSchema = z.object({
 export type AddCrosshairFormValues = z.infer<typeof formSchema>
 
 export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
-	const { postCrosshair, isUploadingCrosshair } = useCrosshairPost()
+	const { addCrosshair, isAddingCrosshair } = useAddCrosshairPost()
 	const { mutateCrosshairs } = useCrosshair()
 	const form = useForm<AddCrosshairFormValues>({
 		initialValues: {
@@ -34,7 +34,7 @@ export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 	})
 
 	const handleSubmit = async (values: AddCrosshairFormValues) => {
-		const res = await postCrosshair(values)
+		const res = await addCrosshair(values)
 		showNotification({
 			message: res?.message,
 			icon: res?.success ? (
@@ -73,9 +73,9 @@ export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 			</Stack>
 			<Button
 				type='submit'
-				disabled={isUploadingCrosshair || !form.isDirty()}
+				disabled={isAddingCrosshair || !form.isDirty()}
 				leftIcon={
-					isUploadingCrosshair ? (
+					isAddingCrosshair ? (
 						<Loader size={'xs'} />
 					) : (
 						<IconCrosshair />

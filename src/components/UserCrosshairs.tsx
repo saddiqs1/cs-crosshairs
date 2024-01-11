@@ -1,7 +1,8 @@
-import { Center, Flex, Loader } from '@mantine/core'
+import { Center, Flex, Loader, Stack } from '@mantine/core'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { CrosshairPreview } from './CrosshairPreview'
 import { AddCrosshairCard } from './AddCrosshairCard'
+import { EditCrosshairsCard } from './EditCrosshairsCard'
 
 type Props = {}
 
@@ -23,7 +24,10 @@ export const UserCrosshairs: React.FC<Props> = () => {
 							key={i}
 						/>
 					))}
-					<AddCrosshairCard />
+					<Stack spacing={'xs'}>
+						<AddCrosshairCard />
+						<EditCrosshairsCard crosshairs={crosshairs} />
+					</Stack>
 				</Flex>
 			)}
 		</>
