@@ -26,12 +26,23 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 				},
 			})}
 			onClick={() => copyCommands(crosshairCode)}
+			title={`Copy ${name}`}
 		>
 			<RenderCrosshair
 				crosshair={getCrosshair(crosshairCode)}
 				size={100}
 			/>
-			<Text ta='center' size={'sm'} c={'dimmed'}>
+			<Text
+				ta='center'
+				c={'dimmed'}
+				size={'sm'}
+				sx={{
+					width: 100,
+					whiteSpace: 'nowrap',
+					overflow: 'hidden',
+					textOverflow: 'ellipsis',
+				}}
+			>
 				{name}
 			</Text>
 		</Stack>

@@ -1,3 +1,4 @@
+import { AddCrosshairCard } from '@components/AddCrosshairCard'
 import { CrosshairPreview } from '@components/CrosshairPreview'
 import { UserContext } from '@contexts/UserContext'
 import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
@@ -66,15 +67,40 @@ export default function Manager() {
 			)}
 
 			{!isLoading && user && (
-				<Stack spacing={'xs'}>
-					<Text ta={'center'} c={'dimmed'}>
-						Welcome, {user.username}!
-					</Text>
-					<Text ta={'center'} c={'dimmed'}>
-						Click on a card below to copy the console commands for
-						it.
-					</Text>
-				</Stack>
+				<>
+					<Stack spacing={'xs'}>
+						<Text ta={'center'} c={'dimmed'}>
+							Welcome, {user.username}!
+						</Text>
+						<Text ta={'center'} c={'dimmed'}>
+							Click on a card below to copy the console commands
+							for it.
+						</Text>
+					</Stack>
+					<Flex
+						justify={'center'}
+						align={'end'}
+						gap={'xl'}
+						wrap={'wrap'}
+					>
+						<Flex
+							justify={'center'}
+							align={'end'}
+							gap={'xl'}
+							wrap={'wrap'}
+						>
+							{/* TODO - retrieve user crosshair codes here */}
+							{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
+								<CrosshairPreview
+									crosshairCode={c.crosshairCode}
+									name={c.name}
+									key={i}
+								/>
+							))}
+							<AddCrosshairCard />
+						</Flex>
+					</Flex>
+				</>
 			)}
 		</Stack>
 	)
