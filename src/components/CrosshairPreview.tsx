@@ -1,8 +1,6 @@
-import { copy } from '@lib/copy'
 import { Stack, Text } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
-const csgoSharecode = require('csgo-sharecode')
-import { Crosshair, RenderCrosshair } from './RenderCrosshair'
+import { RenderCrosshair } from './RenderCrosshair'
+import { useCrosshair } from '@lib/hooks/useCrosshair'
 
 type Props = {
 	crosshairCode: string
@@ -10,30 +8,7 @@ type Props = {
 }
 
 export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
-	const crosshair: Crosshair =
-		csgoSharecode.decodeCrosshairShareCode(crosshairCode)
-
-	const onClick = () => {
-		try {
-			const crosshairCommands = csgoSharecode
-				.crosshairToConVars(crosshair)
-				.replaceAll('\n', ';')
-
-			copy(crosshairCommands)
-
-			notifications.show({
-				title: 'Crosshair Copied',
-				message: 'Crosshair is copied to your clipboard',
-				color: 'green',
-			})
-		} catch (error: any) {
-			notifications.show({
-				title: 'Error Copying Crosshair',
-				message: 'Crosshair input is in an incorrect format',
-				color: 'red',
-			})
-		}
-	}
+	const { copyCommands, getCrosshair } = useCrosshair()
 
 	return (
 		<Stack
@@ -50,9 +25,12 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 					background: theme.colors.dark[4],
 				},
 			})}
-			onClick={onClick}
+			onClick={() => copyCommands(crosshairCode)}
 		>
-			<RenderCrosshair crosshair={crosshair} size={100} />
+			<RenderCrosshair
+				crosshair={getCrosshair(crosshairCode)}
+				size={100}
+			/>
 			<Text ta='center' size={'sm'} c={'dimmed'}>
 				{name}
 			</Text>

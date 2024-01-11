@@ -35,7 +35,7 @@ export default function Manager() {
 				</Center>
 			)}
 
-			{!isLoading && user && (
+			{!isLoading && !user && (
 				<>
 					<Stack spacing={'xs'}>
 						<Text ta={'center'} c={'dimmed'}>
