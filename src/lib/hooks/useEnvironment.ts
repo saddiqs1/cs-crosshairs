@@ -2,7 +2,7 @@ type Environment = { url: string; label: string; color: string }
 
 const LOCAL = { url: 'http://localhost:3000', label: 'Local', color: 'yellow' }
 const PROD = {
-	url: 'https://cs-crosshairs.vercel.app/',
+	url: 'https://cs-crosshairs.vercel.app',
 	label: 'Prod',
 	color: 'green',
 }
