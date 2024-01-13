@@ -19,6 +19,7 @@ import {
 } from '@tabler/icons-react'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { DBTypes } from '@my-types/database'
+import { getCrosshair } from '@lib/crosshairUtils'
 
 type Props = {
 	onComplete: () => void
@@ -38,6 +39,20 @@ const formSchema = z.object({
 				.regex(
 					crosshairCodeRegex,
 					'Crosshair code must be in a valid format.'
+				)
+				.refine(
+					(val) => {
+						try {
+							getCrosshair(val)
+						} catch (error) {
+							return false
+						}
+
+						return true
+					},
+					{
+						message: 'Invalid or old crosshair code.',
+					}
 				),
 			user_id: z.number().nullable(),
 		})
@@ -149,6 +164,7 @@ export const EditCrosshairsForm: React.FC<Props> = ({
 						<TextInput
 							label={'Edit Crosshair Code'}
 							required
+							w={450}
 							{...form.getInputProps(`crosshairs.${i}.crosshair`)}
 						/>
 						<ActionIcon
