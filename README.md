@@ -100,8 +100,15 @@ You will need to install the following in order to build, run and develop this r
     npm run dev:reset-db
     ```
 
-### TODO
+## Contribution Guide
 
--   [ ] Fix `csgo-sharecode` package import
--   [ ] toggle between 16:9 vs 4:3 for crosshair preview
--   [ ] validation on converter page
+For simplicity's sake, we are using the [`issues`](https://github.com/saddiqs1/cs-crosshairs/issues) tab as a way to track tasks that need doing. Feel free to pick up anything from this list and contribute in any way possible!
+
+The major design philosophy to keep in mind when developing anything on this site is to **keep the site as lightweight and as performant as possible**. Ideally players will be using this site whilst playing CS at the same time, and every frame matters whilst playing, so whenever possible avoid anything overly resource intensive e.g. over the top animations.
+
+## Contact Me
+
+If you need any help/want to ask any questions, feel free to reach out to me in any of the following ways:
+
+-   Twitter: [@shoobie_cs](https://twitter.com/shoobie_cs)
+-   Discord: shoobie96
