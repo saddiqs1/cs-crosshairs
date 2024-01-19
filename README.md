@@ -8,12 +8,11 @@ Back in the good old days of CS:GO, we had the `apply_crosshair_code CSGO-...` c
 You can also store crosshairs on the site, to allow you to be able to switch quickly between preferred crosshairs on the fly mid game.
 ![Preview 2](preview-2.png)
 
-## Tech Stack
+## Tech Stack / Main Packages Used
 
 -   [NextJs](https://nextjs.org/) with [Typescript](https://www.typescriptlang.org/)
 -   [SWR](https://swr.vercel.app/)
 -   [Iron Session](https://github.com/vvo/iron-session)
--   [node-steam-openid](https://github.com/LeeviHalme/node-steam-openid)
 -   [Mantine Component Library (v6)](https://v6.mantine.dev/pages/getting-started/)
 -   [Kysely](https://kysely.dev/) with [kysely-codegen](https://github.com/RobinBlomberg/kysely-codegen)
 -   [Postgres](https://www.postgresql.org/)
