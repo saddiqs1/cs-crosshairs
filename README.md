@@ -1,14 +1,53 @@
-This is a basic [Next.js](https://nextjs.org/) template with [Mantine Core & Notifications](https://mantine.dev/) setup.
+# CS Crosshair Site
+
+[![Deploy](https://github.com/saddiqs1/cs-crosshairs/actions/workflows/main-deploy.yml/badge.svg)](https://github.com/saddiqs1/cs-crosshairs/actions/workflows/main-deploy.yml)
+
+Back in the good old days of CS:GO, we had the `apply_crosshair_code CSGO-...` command to allow us to quickly switch crosshairs. With the launch of CS2, this was removed, with no mention as to whether it would be returned or not. So in the meantime, you can use this site to enter in a crosshair code and copy all the crosshair commands to your clipboard to allow you to be able to switch crosshair using the in game console.
+![Preview 1](preview-1.png)
+
+You can also store crosshairs on the site, to allow you to be able to switch quickly between preferred crosshairs on the fly mid game.
+![Preview 2](preview-2.png)
+
+## Tech Stack / Main Packages Used
+
+-   [NextJs](https://nextjs.org/) with [Typescript](https://www.typescriptlang.org/)
+-   [SWR](https://swr.vercel.app/)
+-   [Iron Session](https://github.com/vvo/iron-session)
+-   [Mantine Component Library (v6)](https://v6.mantine.dev/pages/getting-started/)
+-   [Kysely](https://kysely.dev/) with [kysely-codegen](https://github.com/RobinBlomberg/kysely-codegen)
+-   [Postgres](https://www.postgresql.org/)
+
+## Prerequisites
+
+You will need to install the following in order to build, run and develop this repo locally:
+
+-   [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+-   [Node & `npm`](https://nodejs.org/en/download)
+    -   Alternatively you can download both of these via [`nvm`](https://github.com/nvm-sh/nvm#installing-and-updating)
+-   [Postgres](https://www.postgresql.org/download/)
 
 ## Getting Started
 
-1. Run the development server:
+1. Create a file at the root level called `.env.local`, following the `.env example` file. Fill in the relevant gaps.
+
+2. Install all packages.
+
+    ```bash
+    npm i
+    ```
+
+3. Run the `migrate` command to initialise your database, and optionally run the `db:seed` command to seed your database with example data to start off with.
+
+    ```bash
+    npm run migrate
+    npm run db:seed
+    ```
+
+4. Run the development server and view the page in your browser at [http://localhost:3000](http://localhost:3000).
 
     ```bash
     npm run dev
     ```
-
-2. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Database Commands
 
@@ -24,7 +63,7 @@ This is a basic [Next.js](https://nextjs.org/) template with [Mantine Core & Not
     npm run migrate
     ```
 
--   Generate your database types. You should run this everytime after you have run a new migration.
+-   Generate your database types. You should run this every time after you have run a new migration.
 
     ```bash
     npm run db:generate
@@ -60,13 +99,15 @@ This is a basic [Next.js](https://nextjs.org/) template with [Mantine Core & Not
     npm run dev:reset-db
     ```
 
-### TODO
+## Contribution Guide
 
--   [ ] Fix `csgo-sharecode` package import
--   [ ] Show crosshair style within preview
--   [ ] toggle between 16:9 vs 4:3 for crosshair preview
--   [ ] allow user to save crosshair
--   [ ] validation on converter page
+For simplicity's sake, we are using the [`issues`](https://github.com/saddiqs1/cs-crosshairs/issues) tab as a way to track tasks that need doing. Feel free to pick up anything from this list and contribute in any way possible!
 
--   [ ] create login
--   [ ] create ui for entering in and saving crosshairs
+The major design philosophy to keep in mind when developing anything on this site is to **keep the site as lightweight and as performant as possible**. Ideally players will be using this site whilst playing CS at the same time, and every frame matters whilst playing, so whenever possible avoid anything overly resource intensive e.g. over the top animations.
+
+## Contact Me
+
+If you need any help/want to ask any questions, feel free to reach out to me in any of the following ways:
+
+-   Twitter: [@shoobie_cs](https://twitter.com/shoobie_cs)
+-   Discord: shoobie96
