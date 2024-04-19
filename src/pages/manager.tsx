@@ -1,7 +1,17 @@
+import { AddCrosshairCard } from '@components/AddCrosshairCard'
 import { CrosshairPreview } from '@components/CrosshairPreview'
-import { UserCrosshairs } from '@components/UserCrosshairs'
+import { EditCrosshairsCard } from '@components/EditCrosshairsCard'
 import { UserContext } from '@contexts/UserContext'
-import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
+import { useCrosshair } from '@lib/hooks/useCrosshair'
+import {
+	Text,
+	Stack,
+	Flex,
+	Loader,
+	Center,
+	Group,
+	MediaQuery,
+} from '@mantine/core'
 import { useContext } from 'react'
 
 const SHOOBIE_CROSSHAIR_CODES = [
@@ -22,6 +32,7 @@ const SHOOBIE_CROSSHAIR_CODES = [
 
 export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
+	const { crosshairs, isCrosshairsLoading } = useCrosshair()
 
 	return (
 		<Stack spacing={'xl'}>
@@ -63,16 +74,47 @@ export default function Manager() {
 
 			{!isLoading && user && (
 				<>
-					<Stack spacing={'xs'}>
-						<Text ta={'center'} c={'dimmed'}>
-							Welcome, {user.username}!
-						</Text>
-						<Text ta={'center'} c={'dimmed'}>
-							Add crosshairs, and then click on a card below to
-							copy the console commands for it.
-						</Text>
-					</Stack>
-					<UserCrosshairs />
+					<Group position='center' spacing={'xl'}>
+						<MediaQuery
+							smallerThan={'sm'}
+							styles={{ display: 'none' }}
+						>
+							<Stack spacing={'xs'} w={'30%'}>
+								<Text ta={'center'} c={'dimmed'}>
+									Welcome, {user.username}!
+								</Text>
+								<Text ta={'center'} c={'dimmed'}>
+									Add crosshairs, and then click on a card
+									below to copy the console commands for it.
+								</Text>
+							</Stack>
+						</MediaQuery>
+						<AddCrosshairCard />
+						<EditCrosshairsCard
+							crosshairs={crosshairs}
+							disabled={isCrosshairsLoading}
+						/>
+					</Group>
+					{isCrosshairsLoading ? (
+						<Center>
+							<Loader size={'lg'} />
+						</Center>
+					) : (
+						<Flex
+							justify={'center'}
+							align={'end'}
+							gap={'xl'}
+							wrap={'wrap'}
+						>
+							{crosshairs.map((c, i) => (
+								<CrosshairPreview
+									crosshairCode={c.crosshair}
+									name={c.name}
+									key={i}
+								/>
+							))}
+						</Flex>
+					)}
 				</>
 			)}
 		</Stack>
