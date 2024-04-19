@@ -6,11 +6,20 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface CrosshairGroups {
+  id: Generated<number>;
+  name: string;
+  order: number;
+  user_id: number | null;
+}
+
 export interface Crosshairs {
   created_at: Generated<Timestamp>;
   crosshair: string;
+  crosshair_group_id: number | null;
   id: Generated<number>;
   name: string;
+  order: Generated<number>;
   user_id: number | null;
 }
 
@@ -22,6 +31,7 @@ export interface Users {
 }
 
 export interface DB {
+  crosshair_groups: CrosshairGroups;
   crosshairs: Crosshairs;
   users: Users;
 }
