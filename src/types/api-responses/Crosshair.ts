@@ -1,8 +1,13 @@
 import { DBTypes } from '@my-types/database'
 
+export type CrosshairGroup = {
+	group: string | null
+	crosshairs: DBTypes['crosshairs'][]
+}
+
 export type GetCrosshairResponse =
 	| {
-			message: DBTypes['crosshairs'][]
+			message: CrosshairGroup[]
 			success: true
 	  }
 	| {

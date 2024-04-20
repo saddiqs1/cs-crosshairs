@@ -47,13 +47,21 @@ async function getCrosshairs(
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
 
+		// TODO - return crosshairs grouped by their groups
 		const crosshairs = await kysely
 			.selectFrom('crosshairs')
 			.selectAll()
 			.where('crosshairs.user_id', '=', sessionUser.id)
 			.execute()
 
-		return res.status(200).json({ message: crosshairs, success: true })
+		return res.status(200).json({
+			message: [
+				{ group: 'Group A', crosshairs },
+				{ group: 'Group B', crosshairs },
+				{ group: null, crosshairs },
+			],
+			success: true,
+		})
 	} catch (error: any) {
 		return res.json({
 			message: new Error(error).message,

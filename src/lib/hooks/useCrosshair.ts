@@ -1,6 +1,8 @@
 import fetcher from '@lib/fetcher'
-import { GetCrosshairResponse } from '@my-types/api-responses/Crosshair'
-import { DBTypes } from '@my-types/database'
+import {
+	CrosshairGroup,
+	GetCrosshairResponse,
+} from '@my-types/api-responses/Crosshair'
 import useSWRImmutable from 'swr/immutable'
 
 export function useCrosshair() {
@@ -9,7 +11,7 @@ export function useCrosshair() {
 		fetcher
 	)
 
-	let crosshairs: DBTypes['crosshairs'][] = []
+	let crosshairs: CrosshairGroup[] = []
 	if (data && data.success) {
 		crosshairs = data.message
 	}

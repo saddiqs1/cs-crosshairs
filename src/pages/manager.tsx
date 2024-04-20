@@ -1,4 +1,5 @@
 import { AddCrosshairCard } from '@components/AddCrosshairCard'
+import { CrosshairPage } from '@components/CrosshairPage'
 import { CrosshairPreview } from '@components/CrosshairPreview'
 import { EditCrosshairsCard } from '@components/EditCrosshairsCard'
 import { UserContext } from '@contexts/UserContext'
@@ -29,7 +30,7 @@ const SHOOBIE_CROSSHAIR_CODES = [
 		name: 'Vertigo Pugger',
 	},
 ]
-
+// https://dnd.hellopangea.com/?path=/story/examples-multiple-horizontal-lists--stress-test
 export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
 	const { crosshairs, isCrosshairsLoading } = useCrosshair()
@@ -90,30 +91,17 @@ export default function Manager() {
 							</Stack>
 						</MediaQuery>
 						<AddCrosshairCard />
-						<EditCrosshairsCard
-							crosshairs={crosshairs}
+						{/* <EditCrosshairsCard
+							crosshairs={crosshairs[0].crosshairs}
 							disabled={isCrosshairsLoading}
-						/>
+						/> */}
 					</Group>
 					{isCrosshairsLoading ? (
 						<Center>
 							<Loader size={'lg'} />
 						</Center>
 					) : (
-						<Flex
-							justify={'center'}
-							align={'end'}
-							gap={'xl'}
-							wrap={'wrap'}
-						>
-							{crosshairs.map((c, i) => (
-								<CrosshairPreview
-									crosshairCode={c.crosshair}
-									name={c.name}
-									key={i}
-								/>
-							))}
-						</Flex>
+						<CrosshairPage crosshairGroups={crosshairs} />
 					)}
 				</>
 			)}
