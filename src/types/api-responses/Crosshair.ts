@@ -1,7 +1,7 @@
 import { DBTypes } from '@my-types/database'
 
 export type CrosshairGroup = {
-	group: string | null
+	group: DBTypes['crosshair_groups'] | null
 	crosshairs: DBTypes['crosshairs'][]
 }
 

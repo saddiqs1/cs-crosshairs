@@ -18,6 +18,8 @@ import {
 import { getIronSession } from 'iron-session'
 import { User } from '@my-types/user'
 import { EditCrosshairFormValues } from '@components/EditCrosshairsForm'
+import { sql } from 'kysely'
+import { DBTypes } from '@my-types/database'
 
 interface PostRequest extends NextApiRequest {
 	body: EditCrosshairFormValues
@@ -47,19 +49,25 @@ async function getCrosshairs(
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
 
-		// TODO - return crosshairs grouped by their groups
+		// TODO - can we make the raw sql statements type safe helpers?
 		const crosshairs = await kysely
-			.selectFrom('crosshairs')
-			.selectAll()
-			.where('crosshairs.user_id', '=', sessionUser.id)
+			.selectFrom('crosshair_groups as cg')
+			.select(
+				sql<DBTypes['crosshair_groups'] | null>`to_json(cg)`.as('group')
+			)
+			.fullJoin('crosshairs as c', 'cg.id', 'c.crosshair_group_id')
+			.select(
+				sql<DBTypes['crosshairs'][]>`json_agg(c ORDER BY c."order")`.as(
+					'crosshairs'
+				)
+			)
+			.where('c.user_id', '=', sessionUser.id)
+			.groupBy('cg.id')
+			.orderBy(['cg.order'])
 			.execute()
 
 		return res.status(200).json({
-			message: [
-				{ group: 'Group A', crosshairs },
-				{ group: 'Group B', crosshairs },
-				{ group: null, crosshairs },
-			],
+			message: crosshairs,
 			success: true,
 		})
 	} catch (error: any) {

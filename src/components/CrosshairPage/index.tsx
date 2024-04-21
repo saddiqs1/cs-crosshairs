@@ -7,9 +7,15 @@ type Props = {
 	crosshairGroups: CrosshairGroup[]
 }
 
+/*
+	TODO:
+	2 - create way to make new 'group'
+	3 - implement drag and drop in a way so that you can move xhairs to 'groups'
+*/
+
 export const CrosshairPage: React.FC<Props> = ({ crosshairGroups }) => {
 	const accordionGroups = crosshairGroups
-		.map((cg) => cg.group)
+		.map((cg) => (cg.group !== null ? cg.group.name : null))
 		.filter((item): item is string => item !== null)
 
 	const ungroupedCrosshairs = crosshairGroups.filter((cg) => !cg.group)
@@ -26,9 +32,9 @@ export const CrosshairPage: React.FC<Props> = ({ crosshairGroups }) => {
 				{crosshairGroups.map((cg, i) => (
 					<>
 						{cg.group && (
-							<Accordion.Item value={cg.group}>
+							<Accordion.Item value={cg.group.name}>
 								<Accordion.Control>
-									{cg.group}
+									{cg.group.name}
 								</Accordion.Control>
 								<Accordion.Panel>
 									<CrosshairList crosshairs={cg.crosshairs} />
@@ -51,7 +57,7 @@ export const CrosshairPage: React.FC<Props> = ({ crosshairGroups }) => {
 const CrosshairList: React.FC<{ crosshairs: DBTypes['crosshairs'][] }> = ({
 	crosshairs,
 }) => (
-	<Flex justify={'center'} align={'end'} gap={'xl'} wrap={'wrap'}>
+	<Flex justify={'left'} align={'end'} gap={'xl'} wrap={'wrap'}>
 		{crosshairs.map((c, i) => (
 			<CrosshairPreview
 				crosshairCode={c.crosshair}
