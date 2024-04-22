@@ -5,6 +5,11 @@ import { AddCrosshairForm } from './AddCrosshairForm'
 
 type Props = {}
 
+/*
+	TODO:
+	- ability to add to pre-existing groups here
+		> or create new group from within this form
+*/
 export const AddCrosshairCard: React.FC<Props> = ({}) => {
 	const [opened, { open, close }] = useDisclosure(false)
 

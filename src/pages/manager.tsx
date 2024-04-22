@@ -1,18 +1,7 @@
-import { AddCrosshairCard } from '@components/AddCrosshairCard'
-import { CrosshairPage } from '@components/CrosshairPage'
+import { ManagerPage } from '@components/ManagerPage'
 import { CrosshairPreview } from '@components/CrosshairPreview'
-import { EditCrosshairsCard } from '@components/EditCrosshairsCard'
 import { UserContext } from '@contexts/UserContext'
-import { useCrosshair } from '@lib/hooks/useCrosshair'
-import {
-	Text,
-	Stack,
-	Flex,
-	Loader,
-	Center,
-	Group,
-	MediaQuery,
-} from '@mantine/core'
+import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
 import { useContext } from 'react'
 
 const SHOOBIE_CROSSHAIR_CODES = [
@@ -33,7 +22,6 @@ const SHOOBIE_CROSSHAIR_CODES = [
 // https://dnd.hellopangea.com/?path=/story/examples-multiple-horizontal-lists--stress-test
 export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
-	const { crosshairs, isCrosshairsLoading } = useCrosshair()
 
 	return (
 		<Stack spacing={'xl'}>
@@ -64,6 +52,7 @@ export default function Manager() {
 					>
 						{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
 							<CrosshairPreview
+								id={0}
 								crosshairCode={c.crosshairCode}
 								name={c.name}
 								key={i}
@@ -73,38 +62,7 @@ export default function Manager() {
 				</>
 			)}
 
-			{!isLoading && user && (
-				<>
-					<Group position='center' spacing={'xl'}>
-						<MediaQuery
-							smallerThan={'sm'}
-							styles={{ display: 'none' }}
-						>
-							<Stack spacing={'xs'} w={'30%'}>
-								<Text ta={'center'} c={'dimmed'}>
-									Welcome, {user.username}!
-								</Text>
-								<Text ta={'center'} c={'dimmed'}>
-									Add crosshairs, and then click on a card
-									below to copy the console commands for it.
-								</Text>
-							</Stack>
-						</MediaQuery>
-						<AddCrosshairCard />
-						{/* <EditCrosshairsCard
-							crosshairs={crosshairs[0].crosshairs}
-							disabled={isCrosshairsLoading}
-						/> */}
-					</Group>
-					{isCrosshairsLoading ? (
-						<Center>
-							<Loader size={'lg'} />
-						</Center>
-					) : (
-						<CrosshairPage crosshairGroups={crosshairs} />
-					)}
-				</>
-			)}
+			{!isLoading && user && <ManagerPage username={user.username} />}
 		</Stack>
 	)
 }
