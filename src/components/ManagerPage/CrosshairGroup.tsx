@@ -1,7 +1,6 @@
 import { Accordion } from '@mantine/core'
 import { CrosshairList } from './CrosshairList'
 import { DBTypes } from '@my-types/database'
-import { useDroppable } from '@dnd-kit/core'
 
 type Props = {
 	id: number
@@ -14,16 +13,11 @@ export const CrosshairGroup: React.FC<Props> = ({
 	groupName,
 	crosshairs,
 }) => {
-	const { isOver, setNodeRef } = useDroppable({ id })
-	const style = {
-		color: isOver ? 'green' : undefined,
-	}
-
 	return (
-		<Accordion.Item ref={setNodeRef} style={style} value={groupName}>
+		<Accordion.Item value={groupName}>
 			<Accordion.Control>{groupName}</Accordion.Control>
 			<Accordion.Panel>
-				<CrosshairList crosshairs={crosshairs} />
+				<CrosshairList id={id} crosshairs={crosshairs} />
 			</Accordion.Panel>
 		</Accordion.Item>
 	)

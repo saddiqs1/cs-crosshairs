@@ -39,7 +39,10 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({ crosshairGroups }) => {
 				Uncategorised
 			</Title>
 			<Box w={'68%'}>
-				<CrosshairList crosshairs={ungroupedCrosshairs[0].crosshairs} />
+				<CrosshairList
+					id={'Uncategorised'}
+					crosshairs={ungroupedCrosshairs[0].crosshairs}
+				/>
 			</Box>
 		</Stack>
 	)

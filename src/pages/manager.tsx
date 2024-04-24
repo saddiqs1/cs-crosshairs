@@ -1,5 +1,5 @@
 import { ManagerPage } from '@components/ManagerPage'
-import { CrosshairPreview } from '@components/CrosshairPreview'
+import { CrosshairCard } from '@components/CrosshairCard'
 import { UserContext } from '@contexts/UserContext'
 import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
 import { useContext } from 'react'
@@ -51,7 +51,7 @@ export default function Manager() {
 						wrap={'wrap'}
 					>
 						{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
-							<CrosshairPreview
+							<CrosshairCard
 								id={0}
 								crosshairCode={c.crosshairCode}
 								name={c.name}

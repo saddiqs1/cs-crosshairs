@@ -12,6 +12,7 @@ type Props = {
 /*
 	TODO:
 	https://docs.dndkit.com/
+	https://master--5fc05e08a4a65d0021ae0bf2.chromatic.com/?path=/story/presets-sortable-multiple-containers--vertical-grid
 
 	when dragging crosshair...:
 		1 - can drop onto 'add crosshair button' to create new group for it
@@ -19,15 +20,17 @@ type Props = {
 		3 - can reorder within its current list
 */
 
+const handleDragEnd = (event: DragEndEvent) => {
+	// TODO - handle logic here of record being updated within db
+	const { active, over } = event
+
+	if (over) {
+		console.log(`over: ${over.id}, active: ${active.id}`)
+	}
+}
+
 export const ManagerPage: React.FC<Props> = ({ username }) => {
 	const { crosshairs, isCrosshairsLoading } = useCrosshair()
-
-	const handleDragEnd = (event: DragEndEvent) => {
-		// TODO - handle logic here of record being updated within db
-		if (event.over) {
-			alert(`element dropped at ${event.over.id}`)
-		}
-	}
 
 	return (
 		<DndContext onDragEnd={handleDragEnd}>

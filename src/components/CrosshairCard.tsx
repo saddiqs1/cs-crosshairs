@@ -3,6 +3,7 @@ import { RenderCrosshair } from './RenderCrosshair'
 import { copyCommands, getCrosshair } from '@lib/crosshairUtils'
 import { useDraggable } from '@dnd-kit/core'
 import { CSS } from '@dnd-kit/utilities'
+import { useSortable } from '@dnd-kit/sortable'
 
 type Props = {
 	id: number
@@ -10,17 +11,18 @@ type Props = {
 	name: string
 }
 
-export const CrosshairPreview: React.FC<Props> = ({
-	id,
-	crosshairCode,
-	name,
-}) => {
-	const { attributes, listeners, setNodeRef, transform, isDragging } =
-		useDraggable({
-			id,
-		})
+export const CrosshairCard: React.FC<Props> = ({ id, crosshairCode, name }) => {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id })
 	const style = {
 		transform: CSS.Translate.toString(transform),
+		transition,
 	}
 
 	return (
