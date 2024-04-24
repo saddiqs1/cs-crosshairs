@@ -1,9 +1,6 @@
-import { Center, Group, Loader, MediaQuery, Stack, Text } from '@mantine/core'
-import { DndContext, DragEndEvent } from '@dnd-kit/core'
-import { AddCrosshairCard } from '@components/AddCrosshairCard'
+import { Center, Loader } from '@mantine/core'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { ManagerPageCrosshairs } from './ManagerPageCrosshairs'
-import { useState } from 'react'
 
 type Props = {
 	username: string
@@ -20,45 +17,21 @@ type Props = {
 		3 - can reorder within its current list
 */
 
-const handleDragEnd = (event: DragEndEvent) => {
-	// TODO - handle logic here of record being updated within db
-	const { active, over } = event
-
-	if (over) {
-		console.log(`over: ${over.id}, active: ${active.id}`)
-	}
-}
-
 export const ManagerPage: React.FC<Props> = ({ username }) => {
 	const { crosshairs, isCrosshairsLoading } = useCrosshair()
 
 	return (
-		<DndContext onDragEnd={handleDragEnd}>
-			<Group position='center' spacing={'xl'}>
-				<MediaQuery smallerThan={'sm'} styles={{ display: 'none' }}>
-					<Stack spacing={'xs'} w={'30%'}>
-						<Text ta={'center'} c={'dimmed'}>
-							Welcome, {username}!
-						</Text>
-						<Text ta={'center'} c={'dimmed'}>
-							Add crosshairs, and then click on a card below to
-							copy the console commands for it.
-						</Text>
-					</Stack>
-				</MediaQuery>
-				<AddCrosshairCard />
-				{/* <EditCrosshairsCard
-					crosshairs={crosshairs[0].crosshairs}
-					disabled={isCrosshairsLoading}
-				/> */}
-			</Group>
+		<>
 			{isCrosshairsLoading ? (
 				<Center>
 					<Loader size={'lg'} />
 				</Center>
 			) : (
-				<ManagerPageCrosshairs crosshairGroups={crosshairs} />
+				<ManagerPageCrosshairs
+					username={username}
+					crosshairGroups={crosshairs}
+				/>
 			)}
-		</DndContext>
+		</>
 	)
 }
