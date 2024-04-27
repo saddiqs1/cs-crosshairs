@@ -1,29 +1,11 @@
-import {
-	Accordion,
-	Box,
-	Group,
-	MediaQuery,
-	Stack,
-	Title,
-	Text,
-} from '@mantine/core'
+import { Box, Group, MediaQuery, Stack, Title, Text } from '@mantine/core'
 import { CrosshairGroup as CrosshairGroupType } from '@my-types/api-responses/Crosshair'
 import { CrosshairList } from './CrosshairList'
 import { AddCrosshairCard } from '@components/AddCrosshairCard'
-
-import {
-	DndContext,
-	closestCenter,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	DragEndEvent,
-} from '@dnd-kit/core'
+import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import {
 	arrayMove,
 	SortableContext,
-	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { SortableCrosshairGroupAccordion } from '@components/Draggable/SortableCrosshairGroupAccordion'
@@ -51,6 +33,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			)
 
 			const newArr = arrayMove(crosshairGroups, oldIndex, newIndex)
+
 			// TODO - post this response to endpoint to update groups
 			console.log(newArr)
 		}

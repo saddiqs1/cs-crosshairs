@@ -17,8 +17,8 @@ export const SortableCrosshairGroupAccordion: React.FC<Props> = ({
 	const { attributes, listeners, setNodeRef, transform, transition } =
 		useSortable({ id })
 
-	const style = {
-		transform: CSS.Transform.toString(transform),
+	const style: React.CSSProperties = {
+		transform: CSS.Translate.toString(transform),
 		transition,
 	}
 
