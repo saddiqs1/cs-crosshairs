@@ -14,12 +14,16 @@ export const SortableCrosshairGroupAccordion: React.FC<Props> = ({
 	id,
 	...crosshairGroupProps
 }) => {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id })
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		setActivatorNodeRef,
+		transform,
+	} = useSortable({ id, transition: null })
 
 	const style: React.CSSProperties = {
 		transform: CSS.Translate.toString(transform),
-		transition,
 	}
 
 	return (
@@ -27,6 +31,7 @@ export const SortableCrosshairGroupAccordion: React.FC<Props> = ({
 			<CrosshairGroupAccordion
 				attributes={attributes}
 				listeners={listeners}
+				setActivatorNodeRef={setActivatorNodeRef}
 				{...crosshairGroupProps}
 			/>
 		</div>

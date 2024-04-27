@@ -1,14 +1,36 @@
-import { Box, Group, MediaQuery, Stack, Title, Text } from '@mantine/core'
+import {
+	Box,
+	Group,
+	MediaQuery,
+	Stack,
+	Title,
+	Text,
+	Accordion,
+} from '@mantine/core'
 import { CrosshairGroup as CrosshairGroupType } from '@my-types/api-responses/Crosshair'
 import { CrosshairList } from './CrosshairList'
 import { AddCrosshairCard } from '@components/AddCrosshairCard'
-import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
+import {
+	DndContext,
+	closestCenter,
+	DragEndEvent,
+	useSensors,
+	useSensor,
+	PointerSensor,
+	KeyboardSensor,
+} from '@dnd-kit/core'
 import {
 	arrayMove,
 	SortableContext,
+	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { SortableCrosshairGroupAccordion } from '@components/Draggable/SortableCrosshairGroupAccordion'
+import { useCrosshairGroupPost } from '@lib/hooks/useCrosshairGroupPost'
+import { showNotification } from '@mantine/notifications'
+import { IconCheck, IconCircleX } from '@tabler/icons-react'
+import { useCrosshair } from '@lib/hooks/useCrosshair'
+import { useState } from 'react'
 
 type Props = {
 	username: string
@@ -19,33 +41,65 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 	username,
 	crosshairGroups,
 }) => {
-	const ungroupedCrosshairs = crosshairGroups.find((cg) => !cg.group)
+	const [crosshairGroupsState, setCrosshairGroupsState] =
+		useState(crosshairGroups)
+	const [accordionValue, setAccordionValue] = useState<string[]>(
+		crosshairGroupsState
+			.map((cg) => cg.group?.name)
+			.filter((x): x is string => !!x)
+	)
+	const { updateCrosshairGroups } = useCrosshairGroupPost()
 
-	function handleDragEnd(event: DragEndEvent) {
+	const ungroupedCrosshairs = crosshairGroupsState.find((cg) => !cg.group)
+
+	async function handleDragEnd(event: DragEndEvent) {
 		const { active, over } = event
 
 		if (over && active.id !== over.id) {
-			const oldIndex = crosshairGroups.findIndex(
+			const oldIndex = crosshairGroupsState.findIndex(
 				(cg) => cg.group?.id === active.id
 			)
-			const newIndex = crosshairGroups.findIndex(
+			const newIndex = crosshairGroupsState.findIndex(
 				(cg) => cg.group?.id === over.id
 			)
 
-			const newArr = arrayMove(crosshairGroups, oldIndex, newIndex)
+			const sortedCrosshairGroups = arrayMove(
+				crosshairGroupsState,
+				oldIndex,
+				newIndex
+			)
+			setCrosshairGroupsState(sortedCrosshairGroups)
 
-			// TODO - post this response to endpoint to update groups
-			console.log(newArr)
+			const res = await updateCrosshairGroups({
+				crosshairGroups: sortedCrosshairGroups,
+			})
+			showNotification({
+				message: res?.message,
+				icon: res?.success ? (
+					<IconCheck size={18} />
+				) : (
+					<IconCircleX size={18} />
+				),
+				color: res?.success ? 'green' : 'red',
+			})
 		}
 	}
 
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	)
+
 	return (
 		<DndContext
+			sensors={sensors}
 			collisionDetection={closestCenter}
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext
-				items={crosshairGroups
+				items={crosshairGroupsState
 					.map((cg) => cg.group?.id)
 					.filter((id): id is number => id !== null)}
 				strategy={verticalListSortingStrategy}
@@ -69,21 +123,39 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 					/> */}
 				</Group>
 
-				{crosshairGroups.length > 0 ? (
+				{crosshairGroupsState.length > 0 ? (
 					<Stack align='center'>
-						{crosshairGroups.map((cg, i) => (
-							<>
-								{cg.group && (
-									<Box w={'70%'}>
-										<SortableCrosshairGroupAccordion
-											id={cg.group.id}
-											groupName={cg.group.name}
-											crosshairs={cg.crosshairs}
-										/>
-									</Box>
-								)}
-							</>
-						))}
+						<Accordion
+							variant='separated'
+							chevronPosition='left'
+							disableChevronRotation
+							multiple
+							value={accordionValue}
+							onChange={setAccordionValue}
+							w={'70%'}
+							transitionDuration={0}
+						>
+							{crosshairGroupsState.map((cg, i) => (
+								<>
+									{cg.group && (
+										<Box
+											pb={
+												i ===
+												crosshairGroupsState.length - 2
+													? undefined
+													: 'xl'
+											}
+										>
+											<SortableCrosshairGroupAccordion
+												id={cg.group.id}
+												groupName={cg.group.name}
+												crosshairs={cg.crosshairs}
+											/>
+										</Box>
+									)}
+								</>
+							))}
+						</Accordion>
 						<Stack w={'68%'}>
 							<Title order={5} c={'dimmed'} ta={'left'}>
 								Uncategorised
