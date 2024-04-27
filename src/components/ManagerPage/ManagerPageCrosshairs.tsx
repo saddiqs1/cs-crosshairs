@@ -26,7 +26,7 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { SortableCrosshairGroup } from '@components/Draggable/SortableCrosshairGroup'
+import { SortableCrosshairGroupAccordion } from '@components/Draggable/SortableCrosshairGroupAccordion'
 
 type Props = {
 	username: string
@@ -37,22 +37,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 	username,
 	crosshairGroups,
 }) => {
-	const accordionGroups = crosshairGroups
-		.map((cg) => (cg.group !== null ? cg.group.name : null))
-		.filter((item): item is string => item !== null)
-
 	const ungroupedCrosshairs = crosshairGroups.find((cg) => !cg.group)
-
-	const sensors = useSensors(
-		useSensor(PointerSensor, {
-			activationConstraint: {
-				distance: 15,
-			},
-		}),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		})
-	)
 
 	function handleDragEnd(event: DragEndEvent) {
 		const { active, over } = event
@@ -73,7 +58,6 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 
 	return (
 		<DndContext
-			sensors={sensors}
 			collisionDetection={closestCenter}
 			onDragEnd={handleDragEnd}
 		>
@@ -97,9 +81,9 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 					</MediaQuery>
 					<AddCrosshairCard />
 					{/* <EditCrosshairsCard
-					crosshairs={crosshairs[0].crosshairs}
-					disabled={isCrosshairsLoading}
-				/> */}
+						crosshairs={crosshairs[0].crosshairs}
+						disabled={isCrosshairsLoading}
+					/> */}
 				</Group>
 
 				{crosshairGroups.length > 0 ? (
@@ -108,7 +92,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							<>
 								{cg.group && (
 									<Box w={'70%'}>
-										<SortableCrosshairGroup
+										<SortableCrosshairGroupAccordion
 											id={cg.group.id}
 											groupName={cg.group.name}
 											crosshairs={cg.crosshairs}
