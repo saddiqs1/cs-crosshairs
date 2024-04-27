@@ -1,6 +1,6 @@
 import { Box, Stack, Text } from '@mantine/core'
 import { RenderCrosshair } from './RenderCrosshair'
-import { getCrosshair } from '@lib/crosshairUtils'
+import { copyCommands, getCrosshair } from '@lib/crosshairUtils'
 
 type Props = {
 	id: number
@@ -25,6 +25,7 @@ export const CrosshairCard: React.FC<Props> = ({ id, crosshairCode, name }) => {
 				},
 			})}
 			title={`Copy ${name}`}
+			onClick={() => copyCommands(crosshairCode)}
 		>
 			<RenderCrosshair
 				crosshair={getCrosshair(crosshairCode)}

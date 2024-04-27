@@ -2,14 +2,12 @@ import { Accordion } from '@mantine/core'
 import { CrosshairList } from './CrosshairList'
 import { DBTypes } from '@my-types/database'
 
-type Props = {
-	id: number
+export type CrosshairGroupProps = {
 	groupName: string
 	crosshairs: DBTypes['crosshairs'][]
 }
 
-export const CrosshairGroup: React.FC<Props> = ({
-	id,
+export const CrosshairGroup: React.FC<CrosshairGroupProps> = ({
 	groupName,
 	crosshairs,
 }) => {
@@ -17,7 +15,7 @@ export const CrosshairGroup: React.FC<Props> = ({
 		<Accordion.Item value={groupName}>
 			<Accordion.Control>{groupName}</Accordion.Control>
 			<Accordion.Panel>
-				<CrosshairList id={id} crosshairs={crosshairs} />
+				<CrosshairList crosshairs={crosshairs} />
 			</Accordion.Panel>
 		</Accordion.Item>
 	)
