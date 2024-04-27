@@ -12,11 +12,17 @@ export const CrosshairGroup: React.FC<CrosshairGroupProps> = ({
 	crosshairs,
 }) => {
 	return (
-		<Accordion.Item value={groupName}>
-			<Accordion.Control>{groupName}</Accordion.Control>
-			<Accordion.Panel>
-				<CrosshairList crosshairs={crosshairs} />
-			</Accordion.Panel>
-		</Accordion.Item>
+		<Accordion
+			variant='separated'
+			chevronPosition='left'
+			defaultValue={groupName}
+		>
+			<Accordion.Item value={groupName}>
+				<Accordion.Control>{groupName}</Accordion.Control>
+				<Accordion.Panel>
+					<CrosshairList crosshairs={crosshairs} />
+				</Accordion.Panel>
+			</Accordion.Item>
+		</Accordion>
 	)
 }

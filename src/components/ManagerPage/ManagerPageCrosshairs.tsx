@@ -104,35 +104,33 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 
 				{crosshairGroups.length > 0 ? (
 					<Stack align='center'>
-						<Accordion
-							variant='separated'
-							chevronPosition='left'
-							w={'70%'}
-							multiple
-							defaultValue={accordionGroups}
-						>
-							{crosshairGroups.map((cg, i) => (
-								<>
-									{cg.group && (
+						{crosshairGroups.map((cg, i) => (
+							<>
+								{cg.group && (
+									<Box w={'70%'}>
 										<SortableCrosshairGroup
 											id={cg.group.id}
 											groupName={cg.group.name}
 											crosshairs={cg.crosshairs}
 										/>
-									)}
-								</>
-							))}
-						</Accordion>
-						<Title order={5} c={'dimmed'} ta={'left'} w={'68%'}>
-							Uncategorised
-						</Title>
-						{ungroupedCrosshairs && (
-							<Box w={'68%'}>
-								<CrosshairList
-									crosshairs={ungroupedCrosshairs.crosshairs}
-								/>
-							</Box>
-						)}
+									</Box>
+								)}
+							</>
+						))}
+						<Stack w={'68%'}>
+							<Title order={5} c={'dimmed'} ta={'left'}>
+								Uncategorised
+							</Title>
+							{ungroupedCrosshairs && (
+								<Box>
+									<CrosshairList
+										crosshairs={
+											ungroupedCrosshairs.crosshairs
+										}
+									/>
+								</Box>
+							)}
+						</Stack>
 					</Stack>
 				) : (
 					<Text ta={'center'} py={'xl'} c={'red'} size={'sm'}>
