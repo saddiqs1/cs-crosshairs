@@ -2,15 +2,15 @@ import React from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import {
-	CrosshairGroupAccordion,
+	CrosshairGroupAccordionItem,
 	CrosshairGroupAccordionProps,
-} from '@components/ManagerPage/CrosshairGroupAccordion'
+} from '@components/ManagerPage/CrosshairGroupAccordionItem'
 
 type Props = {
 	id: number
 } & CrosshairGroupAccordionProps
 
-export const SortableCrosshairGroupAccordion: React.FC<Props> = ({
+export const SortableCrosshairGroupAccordionItem: React.FC<Props> = ({
 	id,
 	...crosshairGroupProps
 }) => {
@@ -20,15 +20,17 @@ export const SortableCrosshairGroupAccordion: React.FC<Props> = ({
 		setNodeRef,
 		setActivatorNodeRef,
 		transform,
+		isDragging,
 	} = useSortable({ id, transition: null })
 
 	const style: React.CSSProperties = {
 		transform: CSS.Translate.toString(transform),
+		opacity: isDragging ? 0.5 : 1,
 	}
 
 	return (
 		<div ref={setNodeRef} style={style}>
-			<CrosshairGroupAccordion
+			<CrosshairGroupAccordionItem
 				attributes={attributes}
 				listeners={listeners}
 				setActivatorNodeRef={setActivatorNodeRef}

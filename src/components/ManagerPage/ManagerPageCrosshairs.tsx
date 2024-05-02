@@ -18,6 +18,8 @@ import {
 	useSensor,
 	PointerSensor,
 	KeyboardSensor,
+	DragOverlay,
+	DragStartEvent,
 } from '@dnd-kit/core'
 import {
 	arrayMove,
@@ -25,18 +27,21 @@ import {
 	sortableKeyboardCoordinates,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { SortableCrosshairGroupAccordion } from '@components/Draggable/SortableCrosshairGroupAccordion'
+import { SortableCrosshairGroupAccordionItem } from '@components/Draggable/SortableCrosshairGroupAccordionItem'
 import { useCrosshairGroupPost } from '@lib/hooks/useCrosshairGroupPost'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX } from '@tabler/icons-react'
-import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { useState } from 'react'
+import { CrosshairGroupAccordionItem } from './CrosshairGroupAccordionItem'
 
 type Props = {
 	username: string
 	crosshairGroups: CrosshairGroupType[]
 }
 
+// https://github.com/clauderic/dnd-kit/issues/714
+// https://codesandbox.io/p/sandbox/playground-0mine?file=%2Fsrc%2Fcomponents%2FSortableItem.jsx%3A20%2C5-20%2C35
+// https://codesandbox.io/p/sandbox/github/jdthorpe/dnd-kit-sortable-poc/tree/main/
 export const ManagerPageCrosshairs: React.FC<Props> = ({
 	username,
 	crosshairGroups,
@@ -48,11 +53,15 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			.map((cg) => cg.group?.name)
 			.filter((x): x is string => !!x)
 	)
+	const [activeItem, setActiveItem] = useState<CrosshairGroupType | null>(
+		null
+	)
 	const { updateCrosshairGroups } = useCrosshairGroupPost()
 
 	const ungroupedCrosshairs = crosshairGroupsState.find((cg) => !cg.group)
 
 	async function handleDragEnd(event: DragEndEvent) {
+		setActiveItem(null)
 		const { active, over } = event
 
 		if (over && active.id !== over.id) {
@@ -85,6 +94,16 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 		}
 	}
 
+	function handleDragStart(event: DragStartEvent) {
+		setActiveItem(
+			crosshairGroups[
+				crosshairGroups.findIndex(
+					(cg) => cg.group?.id === event.active.id
+				)
+			]
+		)
+	}
+
 	const sensors = useSensors(
 		useSensor(PointerSensor),
 		useSensor(KeyboardSensor, {
@@ -97,6 +116,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			sensors={sensors}
 			collisionDetection={closestCenter}
 			onDragEnd={handleDragEnd}
+			onDragStart={handleDragStart}
 		>
 			<SortableContext
 				items={crosshairGroupsState
@@ -146,7 +166,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 													: 'xl'
 											}
 										>
-											<SortableCrosshairGroupAccordion
+											<SortableCrosshairGroupAccordionItem
 												id={cg.group.id}
 												groupName={cg.group.name}
 												crosshairs={cg.crosshairs}
@@ -177,6 +197,28 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 					</Text>
 				)}
 			</SortableContext>
+
+			<DragOverlay>
+				{activeItem && (
+					<Accordion
+						variant='separated'
+						chevronPosition='left'
+						disableChevronRotation
+						defaultValue={
+							accordionValue.includes(activeItem.group!.name)
+								? activeItem.group!.name
+								: null
+						}
+						transitionDuration={0}
+					>
+						<CrosshairGroupAccordionItem
+							groupName={activeItem.group!.name}
+							crosshairs={activeItem.crosshairs}
+							dragOverlay
+						/>
+					</Accordion>
+				)}
+			</DragOverlay>
 		</DndContext>
 	)
 }

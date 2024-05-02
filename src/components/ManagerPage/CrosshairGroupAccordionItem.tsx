@@ -10,16 +10,24 @@ import { IconGripVertical } from '@tabler/icons-react'
 export type CrosshairGroupAccordionProps = {
 	groupName: string
 	crosshairs: DBTypes['crosshairs'][]
+	dragOverlay?: boolean
 }
 
 type DraggableProps = Pick<UseDraggableArguments, 'attributes'> & {
-	listeners: DraggableSyntheticListeners
-	setActivatorNodeRef: (element: HTMLElement | null) => void
+	listeners?: DraggableSyntheticListeners
+	setActivatorNodeRef?: (element: HTMLElement | null) => void
 }
 
-export const CrosshairGroupAccordion: React.FC<
+export const CrosshairGroupAccordionItem: React.FC<
 	CrosshairGroupAccordionProps & DraggableProps
-> = ({ groupName, crosshairs, attributes, listeners, setActivatorNodeRef }) => {
+> = ({
+	groupName,
+	crosshairs,
+	dragOverlay,
+	attributes,
+	listeners,
+	setActivatorNodeRef,
+}) => {
 	return (
 		<Accordion.Item value={groupName}>
 			<Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -30,6 +38,7 @@ export const CrosshairGroupAccordion: React.FC<
 						ref={setActivatorNodeRef}
 						{...attributes}
 						{...listeners}
+						sx={{ cursor: dragOverlay ? 'grabbing' : 'grab' }}
 					>
 						<IconGripVertical size='1rem' />
 					</ActionIcon>
