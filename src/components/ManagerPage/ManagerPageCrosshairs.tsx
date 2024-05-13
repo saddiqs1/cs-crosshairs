@@ -8,7 +8,7 @@ import {
 	Accordion,
 } from '@mantine/core'
 import { CrosshairGroup as CrosshairGroupType } from '@my-types/api-responses/Crosshair'
-import { CrosshairList } from './CrosshairList'
+import { DroppableCrosshairList } from '../Draggable/DroppableCrosshairList'
 import { AddCrosshairCard } from '@components/AddCrosshairCard'
 import {
 	DndContext,
@@ -20,6 +20,7 @@ import {
 	KeyboardSensor,
 	DragOverlay,
 	DragStartEvent,
+	UniqueIdentifier,
 } from '@dnd-kit/core'
 import {
 	arrayMove,
@@ -38,6 +39,9 @@ type Props = {
 	username: string
 	crosshairGroups: CrosshairGroupType[]
 }
+
+export const GROUP_PREFIX = 'GROUP-'
+export const CROSSHAIR_PREFIX = 'CROSSHAIR-'
 
 // https://github.com/clauderic/dnd-kit/issues/714
 // https://codesandbox.io/p/sandbox/playground-0mine?file=%2Fsrc%2Fcomponents%2FSortableItem.jsx%3A20%2C5-20%2C35
@@ -60,16 +64,23 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 
 	const ungroupedCrosshairs = crosshairGroupsState.find((cg) => !cg.group)
 
+	const getGroupId = (id: UniqueIdentifier) =>
+		Number(id.toString().replace(GROUP_PREFIX, ''))
+
 	async function handleDragEnd(event: DragEndEvent) {
 		setActiveItem(null)
 		const { active, over } = event
+		if (!over) return
 
-		if (over && active.id !== over.id) {
+		const activeId = getGroupId(active.id)
+		const overId = getGroupId(over.id)
+
+		if (activeId !== overId) {
 			const oldIndex = crosshairGroupsState.findIndex(
-				(cg) => cg.group?.id === active.id
+				(cg) => cg.group?.id === activeId
 			)
 			const newIndex = crosshairGroupsState.findIndex(
-				(cg) => cg.group?.id === over.id
+				(cg) => cg.group?.id === overId
 			)
 
 			const sortedCrosshairGroups = arrayMove(
@@ -98,7 +109,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 		setActiveItem(
 			crosshairGroups[
 				crosshairGroups.findIndex(
-					(cg) => cg.group?.id === event.active.id
+					(cg) => cg.group?.id === getGroupId(event.active.id)
 				)
 			]
 		)
@@ -120,8 +131,10 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 		>
 			<SortableContext
 				items={crosshairGroupsState
-					.map((cg) => cg.group?.id)
-					.filter((id): id is number => id !== null)}
+					.map((cg) =>
+						cg.group?.id ? `${GROUP_PREFIX}${cg.group.id}` : null
+					)
+					.filter((id): id is string => id !== null)}
 				strategy={verticalListSortingStrategy}
 			>
 				<Group position='center' spacing={'xl'}>
@@ -167,7 +180,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 											}
 										>
 											<SortableCrosshairGroupAccordionItem
-												id={cg.group.id}
+												id={`${GROUP_PREFIX}${cg.group.id}`}
 												groupName={cg.group.name}
 												crosshairs={cg.crosshairs}
 											/>
@@ -182,10 +195,11 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							</Title>
 							{ungroupedCrosshairs && (
 								<Box>
-									<CrosshairList
+									<DroppableCrosshairList
 										crosshairs={
 											ungroupedCrosshairs.crosshairs
 										}
+										id={`${GROUP_PREFIX}null`}
 									/>
 								</Box>
 							)}

@@ -7,7 +7,7 @@ import {
 } from '@components/ManagerPage/CrosshairGroupAccordionItem'
 
 type Props = {
-	id: number
+	id: string
 } & CrosshairGroupAccordionProps
 
 export const SortableCrosshairGroupAccordionItem: React.FC<Props> = ({

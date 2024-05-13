@@ -18,7 +18,7 @@ export const CrosshairCard: React.FC<CrosshairCardProps & DraggableProps> = ({
 	listeners,
 	setActivatorNodeRef,
 }) => {
-	const isDraggable = !setActivatorNodeRef
+	const isDraggable = !!setActivatorNodeRef
 
 	return (
 		<Stack

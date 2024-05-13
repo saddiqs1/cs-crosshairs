@@ -1,5 +1,5 @@
 import { Accordion, ActionIcon, Box } from '@mantine/core'
-import { CrosshairList } from './CrosshairList'
+import { DroppableCrosshairList } from '../Draggable/DroppableCrosshairList'
 import { DBTypes } from '@my-types/database'
 import { IconGripVertical } from '@tabler/icons-react'
 import { DraggableProps } from '@my-types/draggable'
@@ -37,7 +37,7 @@ export const CrosshairGroupAccordionItem: React.FC<
 				</Box>
 			</Box>
 			<Accordion.Panel>
-				<CrosshairList crosshairs={crosshairs} />
+				<DroppableCrosshairList crosshairs={crosshairs} id={''} />
 			</Accordion.Panel>
 		</Accordion.Item>
 	)
