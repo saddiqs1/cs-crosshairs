@@ -11,7 +11,6 @@ export const CrosshairList: React.FC<Props> = ({ crosshairs }) => {
 		<Flex justify={'left'} align={'end'} gap={'xl'} wrap={'wrap'}>
 			{crosshairs.map((c, i) => (
 				<CrosshairCard
-					id={c.id}
 					crosshairCode={c.crosshair}
 					name={c.name}
 					key={i}

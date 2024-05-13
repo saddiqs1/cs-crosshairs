@@ -52,7 +52,6 @@ export default function Manager() {
 					>
 						{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
 							<CrosshairCard
-								id={0}
 								crosshairCode={c.crosshairCode}
 								name={c.name}
 								key={i}

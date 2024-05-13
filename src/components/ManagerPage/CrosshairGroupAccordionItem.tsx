@@ -1,21 +1,13 @@
 import { Accordion, ActionIcon, Box } from '@mantine/core'
 import { CrosshairList } from './CrosshairList'
 import { DBTypes } from '@my-types/database'
-import {
-	DraggableSyntheticListeners,
-	UseDraggableArguments,
-} from '@dnd-kit/core'
 import { IconGripVertical } from '@tabler/icons-react'
+import { DraggableProps } from '@my-types/draggable'
 
 export type CrosshairGroupAccordionProps = {
 	groupName: string
 	crosshairs: DBTypes['crosshairs'][]
 	dragOverlay?: boolean
-}
-
-type DraggableProps = Pick<UseDraggableArguments, 'attributes'> & {
-	listeners?: DraggableSyntheticListeners
-	setActivatorNodeRef?: (element: HTMLElement | null) => void
 }
 
 export const CrosshairGroupAccordionItem: React.FC<
