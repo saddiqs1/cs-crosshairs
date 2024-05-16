@@ -6,12 +6,9 @@ import {
 	CrosshairGroupAccordionProps,
 } from '@components/ManagerPage/CrosshairGroupAccordionItem'
 
-type Props = {
-	id: string
-} & CrosshairGroupAccordionProps
+type Props = {} & CrosshairGroupAccordionProps
 
 export const SortableCrosshairGroupAccordionItem: React.FC<Props> = ({
-	id,
 	...crosshairGroupProps
 }) => {
 	const {
@@ -21,7 +18,7 @@ export const SortableCrosshairGroupAccordionItem: React.FC<Props> = ({
 		setActivatorNodeRef,
 		transform,
 		isDragging,
-	} = useSortable({ id, transition: null })
+	} = useSortable({ id: crosshairGroupProps.groupId, transition: null })
 
 	const style: React.CSSProperties = {
 		transform: CSS.Translate.toString(transform),

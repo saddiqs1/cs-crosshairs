@@ -5,6 +5,7 @@ import { IconGripVertical } from '@tabler/icons-react'
 import { DraggableProps } from '@my-types/draggable'
 
 export type CrosshairGroupAccordionProps = {
+	groupId: string
 	groupName: string
 	crosshairs: DBTypes['crosshairs'][]
 	dragOverlay?: boolean
@@ -13,6 +14,7 @@ export type CrosshairGroupAccordionProps = {
 export const CrosshairGroupAccordionItem: React.FC<
 	CrosshairGroupAccordionProps & DraggableProps
 > = ({
+	groupId,
 	groupName,
 	crosshairs,
 	dragOverlay,
@@ -37,7 +39,7 @@ export const CrosshairGroupAccordionItem: React.FC<
 				</Box>
 			</Box>
 			<Accordion.Panel>
-				<DroppableCrosshairList crosshairs={crosshairs} id={''} />
+				<DroppableCrosshairList crosshairs={crosshairs} id={groupId} />
 			</Accordion.Panel>
 		</Accordion.Item>
 	)

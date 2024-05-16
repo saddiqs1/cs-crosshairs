@@ -70,7 +70,7 @@ export const CrosshairCard: React.FC<CrosshairCardProps & DraggableProps> = ({
 					<Box h={22} />
 				)}
 			</Stack>
-			{isDraggable && (
+			{(isDraggable || dragOverlay) && (
 				<Center>
 					<ActionIcon
 						ref={setActivatorNodeRef}

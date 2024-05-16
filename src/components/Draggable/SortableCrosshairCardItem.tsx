@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { CrosshairCard, CrosshairCardProps } from '@components/CrosshairCard'
 
 type Props = {
-	id: number
+	id: string
 } & CrosshairCardProps
 
 export const SortableCrosshairCardItem: React.FC<Props> = ({

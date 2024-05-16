@@ -34,6 +34,8 @@ import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX } from '@tabler/icons-react'
 import { useState } from 'react'
 import { CrosshairGroupAccordionItem } from './CrosshairGroupAccordionItem'
+import { DBTypes } from '@my-types/database'
+import { CrosshairCard } from '@components/CrosshairCard'
 
 type Props = {
 	username: string
@@ -42,6 +44,12 @@ type Props = {
 
 export const GROUP_PREFIX = 'GROUP-'
 export const CROSSHAIR_PREFIX = 'CROSSHAIR-'
+
+const isCrosshairGroupType = (
+	item: CrosshairGroupType | DBTypes['crosshairs']
+): item is CrosshairGroupType => {
+	return (item as CrosshairGroupType).crosshairs !== undefined
+}
 
 // https://github.com/clauderic/dnd-kit/issues/714
 // https://codesandbox.io/p/sandbox/playground-0mine?file=%2Fsrc%2Fcomponents%2FSortableItem.jsx%3A20%2C5-20%2C35
@@ -57,23 +65,23 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			.map((cg) => cg.group?.name)
 			.filter((x): x is string => !!x)
 	)
-	const [activeItem, setActiveItem] = useState<CrosshairGroupType | null>(
-		null
-	)
+	const [activeItem, setActiveItem] = useState<
+		CrosshairGroupType | DBTypes['crosshairs'] | null
+	>(null)
 	const { updateCrosshairGroups } = useCrosshairGroupPost()
 
 	const ungroupedCrosshairs = crosshairGroupsState.find((cg) => !cg.group)
 
-	const getGroupId = (id: UniqueIdentifier) =>
-		Number(id.toString().replace(GROUP_PREFIX, ''))
+	const getId = (id: UniqueIdentifier, prefix: string) =>
+		Number(id.toString().replace(prefix, ''))
 
 	async function handleDragEnd(event: DragEndEvent) {
 		setActiveItem(null)
 		const { active, over } = event
 		if (!over) return
 
-		const activeId = getGroupId(active.id)
-		const overId = getGroupId(over.id)
+		const activeId = getId(active.id, GROUP_PREFIX)
+		const overId = getId(over.id, GROUP_PREFIX)
 
 		if (activeId !== overId) {
 			const oldIndex = crosshairGroupsState.findIndex(
@@ -106,13 +114,39 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 	}
 
 	function handleDragStart(event: DragStartEvent) {
-		setActiveItem(
-			crosshairGroups[
-				crosshairGroups.findIndex(
-					(cg) => cg.group?.id === getGroupId(event.active.id)
-				)
-			]
-		)
+		if (event.active.id.toString().startsWith(GROUP_PREFIX)) {
+			// Group is currently being dragged
+			setActiveItem(
+				crosshairGroups[
+					crosshairGroups.findIndex(
+						(cg) =>
+							cg.group?.id ===
+							getId(event.active.id, GROUP_PREFIX)
+					)
+				]
+			)
+			return
+		}
+
+		if (event.active.id.toString().startsWith(CROSSHAIR_PREFIX)) {
+			// Crosshair is currently being dragged
+			let activeCrosshair: DBTypes['crosshairs'] | null = null
+
+			for (const cg of crosshairGroups) {
+				for (const c of cg.crosshairs) {
+					if (c.id === getId(event.active.id, CROSSHAIR_PREFIX)) {
+						activeCrosshair = c
+						break
+					}
+				}
+				if (activeCrosshair) break
+			}
+
+			setActiveItem(activeCrosshair)
+			return
+		}
+
+		setActiveItem(null)
 	}
 
 	const sensors = useSensors(
@@ -180,7 +214,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 											}
 										>
 											<SortableCrosshairGroupAccordionItem
-												id={`${GROUP_PREFIX}${cg.group.id}`}
+												groupId={`${GROUP_PREFIX}${cg.group.id}`}
 												groupName={cg.group.name}
 												crosshairs={cg.crosshairs}
 											/>
@@ -213,25 +247,33 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			</SortableContext>
 
 			<DragOverlay>
-				{activeItem && (
-					<Accordion
-						variant='separated'
-						chevronPosition='left'
-						disableChevronRotation
-						defaultValue={
-							accordionValue.includes(activeItem.group!.name)
-								? activeItem.group!.name
-								: null
-						}
-						transitionDuration={0}
-					>
-						<CrosshairGroupAccordionItem
-							groupName={activeItem.group!.name}
-							crosshairs={activeItem.crosshairs}
+				{activeItem &&
+					(isCrosshairGroupType(activeItem) ? (
+						<Accordion
+							variant='separated'
+							chevronPosition='left'
+							disableChevronRotation
+							defaultValue={
+								accordionValue.includes(activeItem.group!.name)
+									? activeItem.group!.name
+									: null
+							}
+							transitionDuration={0}
+						>
+							<CrosshairGroupAccordionItem
+								groupName={activeItem.group!.name}
+								crosshairs={activeItem.crosshairs}
+								dragOverlay
+								groupId={''} // TODO - is there a way to not have this here?
+							/>
+						</Accordion>
+					) : (
+						<CrosshairCard
+							crosshairCode={activeItem.crosshair}
+							name={activeItem.name}
 							dragOverlay
 						/>
-					</Accordion>
-				)}
+					))}
 			</DragOverlay>
 		</DndContext>
 	)
