@@ -1,18 +1,9 @@
-import {
-	Box,
-	Group,
-	MediaQuery,
-	Stack,
-	Title,
-	Text,
-	Accordion,
-} from '@mantine/core'
+import { Box, Group, MediaQuery, Stack, Title, Text, Accordion } from '@mantine/core'
 import { CrosshairGroup as CrosshairGroupType } from '@my-types/api-responses/Crosshair'
 import { DroppableCrosshairList } from '../Draggable/DroppableCrosshairList'
 import { AddCrosshairCard } from '@components/AddCrosshairCard'
 import {
 	DndContext,
-	closestCenter,
 	DragEndEvent,
 	useSensors,
 	useSensor,
@@ -21,21 +12,17 @@ import {
 	DragOverlay,
 	DragStartEvent,
 	UniqueIdentifier,
+	DragOverEvent,
+	closestCorners,
 } from '@dnd-kit/core'
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { SortableCrosshairGroupAccordionItem } from '@components/Draggable/SortableCrosshairGroupAccordionItem'
 import { useCrosshairGroupPost } from '@lib/hooks/useCrosshairGroupPost'
-import { showNotification } from '@mantine/notifications'
-import { IconCheck, IconCircleX } from '@tabler/icons-react'
 import { useState } from 'react'
 import { CrosshairGroupAccordionItem } from './CrosshairGroupAccordionItem'
 import { DBTypes } from '@my-types/database'
 import { CrosshairCard } from '@components/CrosshairCard'
+import { insertAtIndex, removeAtIndex } from '@lib/arrayUtils'
 
 type Props = {
 	username: string
@@ -44,38 +31,49 @@ type Props = {
 
 export const GROUP_PREFIX = 'GROUP-'
 export const CROSSHAIR_PREFIX = 'CROSSHAIR-'
+export const SORTABLE_GROUP_ID = 'SORTABLE-GROUP'
 
-const isCrosshairGroupType = (
-	item: CrosshairGroupType | DBTypes['crosshairs']
-): item is CrosshairGroupType => {
+export type SortableContainerData = {
+	sortable: {
+		containerId: UniqueIdentifier
+		index: number
+		items: UniqueIdentifier[]
+	}
+	[key: string]: any
+}
+
+const isCrosshairGroupType = (item: CrosshairGroupType | DBTypes['crosshairs']): item is CrosshairGroupType => {
 	return (item as CrosshairGroupType).crosshairs !== undefined
 }
 
 // https://github.com/clauderic/dnd-kit/issues/714
 // https://codesandbox.io/p/sandbox/playground-0mine?file=%2Fsrc%2Fcomponents%2FSortableItem.jsx%3A20%2C5-20%2C35
 // https://codesandbox.io/p/sandbox/github/jdthorpe/dnd-kit-sortable-poc/tree/main/
-export const ManagerPageCrosshairs: React.FC<Props> = ({
-	username,
-	crosshairGroups,
-}) => {
-	const [crosshairGroupsState, setCrosshairGroupsState] =
-		useState(crosshairGroups)
+
+// TODO - alter logic/strategies etc. to be like example below
+// MultipleContainers.tsx in dnd-kit example repo
+export const ManagerPageCrosshairs: React.FC<Props> = ({ username, crosshairGroups }) => {
+	const [crosshairGroupsState, setCrosshairGroupsState] = useState(crosshairGroups)
 	const [accordionValue, setAccordionValue] = useState<string[]>(
-		crosshairGroupsState
-			.map((cg) => cg.group?.name)
-			.filter((x): x is string => !!x)
+		crosshairGroupsState.map((cg) => cg.group?.name).filter((x): x is string => !!x)
 	)
-	const [activeItem, setActiveItem] = useState<
-		CrosshairGroupType | DBTypes['crosshairs'] | null
-	>(null)
+	const [activeItem, setActiveItem] = useState<CrosshairGroupType | DBTypes['crosshairs'] | null>(null)
 	const { updateCrosshairGroups } = useCrosshairGroupPost()
 
 	const ungroupedCrosshairs = crosshairGroupsState.find((cg) => !cg.group)
 
-	const getId = (id: UniqueIdentifier, prefix: string) =>
-		Number(id.toString().replace(prefix, ''))
+	const getId = (id: UniqueIdentifier, prefix: string) => {
+		const actualId = Number(id.toString().replace(prefix, ''))
+		return Number.isNaN(actualId) ? null : actualId
+	}
 
 	async function handleDragEnd(event: DragEndEvent) {
+		/*
+			TODO:
+			- handle xhair changes
+			- db changes should occur here
+		*/
+
 		setActiveItem(null)
 		const { active, over } = event
 		if (!over) return
@@ -83,34 +81,132 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 		const activeId = getId(active.id, GROUP_PREFIX)
 		const overId = getId(over.id, GROUP_PREFIX)
 
-		if (activeId !== overId) {
-			const oldIndex = crosshairGroupsState.findIndex(
-				(cg) => cg.group?.id === activeId
-			)
-			const newIndex = crosshairGroupsState.findIndex(
-				(cg) => cg.group?.id === overId
-			)
+		if (activeId !== overId && overId) {
+			const oldIndex = crosshairGroupsState.findIndex((cg) => cg.group?.id === activeId)
+			const newIndex = crosshairGroupsState.findIndex((cg) => cg.group?.id === overId)
 
-			const sortedCrosshairGroups = arrayMove(
-				crosshairGroupsState,
-				oldIndex,
-				newIndex
-			)
+			const sortedCrosshairGroups = arrayMove(crosshairGroupsState, oldIndex, newIndex)
+			// console.log(sortedCrosshairGroups)
 			setCrosshairGroupsState(sortedCrosshairGroups)
 
-			const res = await updateCrosshairGroups({
-				crosshairGroups: sortedCrosshairGroups,
-			})
-			showNotification({
-				message: res?.message,
-				icon: res?.success ? (
-					<IconCheck size={18} />
-				) : (
-					<IconCircleX size={18} />
-				),
-				color: res?.success ? 'green' : 'red',
-			})
+			// TODO - uncomment below (db operation)
+			// const res = await updateCrosshairGroups({
+			// 	crosshairGroups: sortedCrosshairGroups,
+			// })
+			// showNotification({
+			// 	message: res?.message,
+			// 	icon: res?.success ? (
+			// 		<IconCheck size={18} />
+			// 	) : (
+			// 		<IconCircleX size={18} />
+			// 	),
+			// 	color: res?.success ? 'green' : 'red',
+			// })
 		}
+	}
+
+	function handleDragOver(event: DragOverEvent) {
+		const { active, over } = event
+		if (!over) return
+
+		const activeId = active.id.toString()
+		const overCurrent = over.data.current as SortableContainerData | undefined
+
+		// Currently dragging a group
+		const activeGroupId = getId(activeId, GROUP_PREFIX)
+		if (activeGroupId) {
+			const overGroupId = overCurrent
+				? getId(overCurrent.sortable.containerId, GROUP_PREFIX)
+				: getId(over.id, GROUP_PREFIX)
+
+			console.log({ over, active, activeGroupId, overGroupId })
+
+			if (!overGroupId) return
+			return moveCrosshairGroup(activeGroupId, overGroupId)
+		}
+
+		const activeCurrent = active.data.current as SortableContainerData | undefined
+
+		// Currently dragging a crosshair
+		const activeCrosshairId = getId(activeId, CROSSHAIR_PREFIX)
+		if (activeCrosshairId) {
+			const activeGroupId = activeCurrent ? getId(activeCurrent.sortable.containerId, GROUP_PREFIX) : null
+
+			const overGroupId = over.id.toString().includes(CROSSHAIR_PREFIX)
+				? getId(overCurrent!.sortable.containerId, GROUP_PREFIX)
+				: getId(over.id, GROUP_PREFIX)
+
+			if (activeGroupId === overGroupId) {
+				/*
+					TODO:
+					- if hovering over same group, update order of crosshairs
+						> if 'over' is xhair, update order
+						> if 'over' is group id, put to end of list
+				*/
+			} else {
+				/*
+					TODO:
+					- if hovering over different group, then do 2 things:
+						> remove from current group
+						> place it in new group at correct position
+				*/
+				const activeIndex = activeCurrent?.sortable.index
+				if (activeIndex === undefined) return
+
+				const overIndex = over.id.toString().includes(GROUP_PREFIX) ? null : overCurrent!.sortable.index
+				const activeCrosshair = crosshairGroupsState
+					.find((cg) => (activeGroupId === null && cg.group === null) || cg.group?.id === activeGroupId)
+					?.crosshairs.find((c) => c.id === activeCrosshairId)
+				if (!activeCrosshair) return
+
+				console.log({ over, active, activeGroupId, overGroupId, activeIndex, overIndex })
+				moveCrosshair(activeGroupId, overGroupId, activeCrosshair, activeIndex, overIndex)
+				return
+			}
+		}
+	}
+
+	const moveCrosshair = (
+		activeGroupId: number | null,
+		overGroupId: number | null,
+		crosshair: DBTypes['crosshairs'],
+		activeIndex: number,
+		overIndex: number | null
+	) => {
+		setCrosshairGroupsState((prev) => {
+			const updatedCrosshairGroups = prev.map((cg) => {
+				if ((overGroupId === null && cg.group === null) || cg.group?.id === overGroupId) {
+					// insert & return
+					return {
+						group: cg.group,
+						crosshairs: insertAtIndex(cg.crosshairs, overIndex ?? cg.crosshairs.length + 1, crosshair),
+					}
+				}
+
+				if ((activeGroupId === null && cg.group === null) || cg.group?.id === activeGroupId) {
+					// remove & return
+					return {
+						group: cg.group,
+						crosshairs: removeAtIndex(cg.crosshairs, activeIndex),
+					}
+				}
+
+				return cg
+			})
+
+			return updatedCrosshairGroups
+		})
+	}
+
+	const moveCrosshairGroup = (activeGroupId: number, overGroupId: number) => {
+		setCrosshairGroupsState((prev) => {
+			const oldIndex = prev.findIndex((cg) => cg.group?.id === activeGroupId)
+			const newIndex = prev.findIndex((cg) => cg.group?.id === overGroupId)
+
+			const sortedCrosshairGroups = arrayMove(prev, oldIndex, newIndex)
+
+			return sortedCrosshairGroups
+		})
 	}
 
 	function handleDragStart(event: DragStartEvent) {
@@ -118,11 +214,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 			// Group is currently being dragged
 			setActiveItem(
 				crosshairGroups[
-					crosshairGroups.findIndex(
-						(cg) =>
-							cg.group?.id ===
-							getId(event.active.id, GROUP_PREFIX)
-					)
+					crosshairGroups.findIndex((cg) => cg.group?.id === getId(event.active.id, GROUP_PREFIX))
 				]
 			)
 			return
@@ -159,15 +251,19 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 	return (
 		<DndContext
 			sensors={sensors}
-			collisionDetection={closestCenter}
-			onDragEnd={handleDragEnd}
+			collisionDetection={closestCorners}
+			// onDragEnd={handleDragEnd}
 			onDragStart={handleDragStart}
+			onDragOver={handleDragOver}
+			onDragCancel={() => {
+				setCrosshairGroupsState(crosshairGroups)
+				setActiveItem(null)
+			}}
 		>
 			<SortableContext
+				id={SORTABLE_GROUP_ID}
 				items={crosshairGroupsState
-					.map((cg) =>
-						cg.group?.id ? `${GROUP_PREFIX}${cg.group.id}` : null
-					)
+					.map((cg) => (cg.group?.id ? `${GROUP_PREFIX}${cg.group.id}` : null))
 					.filter((id): id is string => id !== null)}
 				strategy={verticalListSortingStrategy}
 			>
@@ -178,8 +274,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 								Welcome, {username}!
 							</Text>
 							<Text ta={'center'} c={'dimmed'}>
-								Add crosshairs, and then click on a card below
-								to copy the console commands for it.
+								Add crosshairs, and then click on a card below to copy the console commands for it.
 							</Text>
 						</Stack>
 					</MediaQuery>
@@ -205,14 +300,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							{crosshairGroupsState.map((cg, i) => (
 								<>
 									{cg.group && (
-										<Box
-											pb={
-												i ===
-												crosshairGroupsState.length - 2
-													? undefined
-													: 'xl'
-											}
-										>
+										<Box pb={i === crosshairGroupsState.length - 2 ? undefined : 'xl'}>
 											<SortableCrosshairGroupAccordionItem
 												groupId={`${GROUP_PREFIX}${cg.group.id}`}
 												groupName={cg.group.name}
@@ -230,9 +318,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							{ungroupedCrosshairs && (
 								<Box>
 									<DroppableCrosshairList
-										crosshairs={
-											ungroupedCrosshairs.crosshairs
-										}
+										crosshairs={ungroupedCrosshairs.crosshairs}
 										id={`${GROUP_PREFIX}null`}
 									/>
 								</Box>
@@ -254,9 +340,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							chevronPosition='left'
 							disableChevronRotation
 							defaultValue={
-								accordionValue.includes(activeItem.group!.name)
-									? activeItem.group!.name
-									: null
+								accordionValue.includes(activeItem.group!.name) ? activeItem.group!.name : null
 							}
 							transitionDuration={0}
 						>
@@ -268,11 +352,7 @@ export const ManagerPageCrosshairs: React.FC<Props> = ({
 							/>
 						</Accordion>
 					) : (
-						<CrosshairCard
-							crosshairCode={activeItem.crosshair}
-							name={activeItem.name}
-							dragOverlay
-						/>
+						<CrosshairCard crosshairCode={activeItem.crosshair} name={activeItem.name} dragOverlay />
 					))}
 			</DragOverlay>
 		</DndContext>
