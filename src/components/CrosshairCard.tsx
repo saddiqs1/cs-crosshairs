@@ -14,7 +14,6 @@ export const CrosshairCard: React.FC<CrosshairCardProps & DraggableProps> = ({
 	crosshairCode,
 	name,
 	dragOverlay,
-	attributes,
 	listeners,
 	setActivatorNodeRef,
 }) => {
@@ -47,10 +46,7 @@ export const CrosshairCard: React.FC<CrosshairCardProps & DraggableProps> = ({
 				title={`Copy ${name}`}
 				onClick={() => copyCommands(crosshairCode)}
 			>
-				<RenderCrosshair
-					crosshair={getCrosshair(crosshairCode)}
-					size={100}
-				/>
+				<RenderCrosshair crosshair={getCrosshair(crosshairCode)} size={100} />
 				{name.length > 0 ? (
 					<Text
 						ta='center'
@@ -74,7 +70,6 @@ export const CrosshairCard: React.FC<CrosshairCardProps & DraggableProps> = ({
 				<Center>
 					<ActionIcon
 						ref={setActivatorNodeRef}
-						{...attributes}
 						{...listeners}
 						sx={{ cursor: dragOverlay ? 'grabbing' : 'grab' }}
 					>

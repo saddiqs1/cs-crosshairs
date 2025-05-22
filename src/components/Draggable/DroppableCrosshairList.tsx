@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const DroppableCrosshairList: React.FC<Props> = ({ id, crosshairs }) => {
-	const { setNodeRef, active } = useDroppable({ id })
+	const { setNodeRef } = useDroppable({ id })
 
 	return (
 		<SortableContext
@@ -26,7 +26,6 @@ export const DroppableCrosshairList: React.FC<Props> = ({ id, crosshairs }) => {
 					alignItems: 'end',
 					gap: '1.5rem',
 					flexWrap: 'wrap',
-					border: active ? '2px dashed blue' : undefined,
 				}}
 			>
 				{crosshairs.map((c, i) => (

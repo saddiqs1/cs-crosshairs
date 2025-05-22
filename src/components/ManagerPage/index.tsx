@@ -1,4 +1,4 @@
-import { Center, Loader } from '@mantine/core'
+import { Center, Loader, Text } from '@mantine/core'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { ManagerPageCrosshairs } from './ManagerPageCrosshairs'
 
@@ -18,18 +18,24 @@ type Props = {
 */
 
 export const ManagerPage: React.FC<Props> = ({ username }) => {
-	const { crosshairs, isCrosshairsLoading } = useCrosshair()
+	const { crosshairItems, crosshairs, groups, isCrosshairsLoading } = useCrosshair()
 
 	return (
 		<>
-			{isCrosshairsLoading ? (
+			{isCrosshairsLoading && (
 				<Center>
 					<Loader size={'lg'} />
 				</Center>
-			) : (
+			)}
+
+			{!isCrosshairsLoading && !crosshairItems && <Text>response is empty</Text>}
+
+			{!isCrosshairsLoading && crosshairItems !== null && (
 				<ManagerPageCrosshairs
 					username={username}
-					crosshairGroups={crosshairs}
+					crosshairItems={crosshairItems}
+					crosshairs={crosshairs}
+					groups={groups}
 				/>
 			)}
 		</>

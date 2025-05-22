@@ -1,3 +1,4 @@
+import { UniqueIdentifier } from '@dnd-kit/core'
 import { DBTypes } from '@my-types/database'
 
 export type CrosshairGroup = {
@@ -5,9 +6,15 @@ export type CrosshairGroup = {
 	crosshairs: DBTypes['crosshairs'][]
 }
 
+export type CrosshairItems = Record<UniqueIdentifier, DBTypes['crosshairs'][]>
+
 export type GetCrosshairResponse =
 	| {
-			message: CrosshairGroup[]
+			message: {
+				crosshairItems: CrosshairItems
+				crosshairs: DBTypes['crosshairs'][]
+				groups: DBTypes['crosshair_groups'][]
+			}
 			success: true
 	  }
 	| {

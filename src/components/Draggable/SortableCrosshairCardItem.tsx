@@ -2,23 +2,15 @@ import React from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { CrosshairCard, CrosshairCardProps } from '@components/CrosshairCard'
+import { UniqueIdentifier } from '@dnd-kit/core'
 
 type Props = {
-	id: string
+	id: UniqueIdentifier
+	disabled?: boolean
 } & CrosshairCardProps
 
-export const SortableCrosshairCardItem: React.FC<Props> = ({
-	id,
-	...crosshairGroupProps
-}) => {
-	const {
-		attributes,
-		listeners,
-		setNodeRef,
-		setActivatorNodeRef,
-		transform,
-		isDragging,
-	} = useSortable({ id, transition: null })
+export const SortableCrosshairCardItem: React.FC<Props> = ({ id, disabled, ...crosshairGroupProps }) => {
+	const { setNodeRef, setActivatorNodeRef, listeners, transform, isDragging } = useSortable({ id })
 
 	const style: React.CSSProperties = {
 		transform: CSS.Translate.toString(transform),
@@ -26,13 +18,8 @@ export const SortableCrosshairCardItem: React.FC<Props> = ({
 	}
 
 	return (
-		<div ref={setNodeRef} style={style}>
-			<CrosshairCard
-				attributes={attributes}
-				listeners={listeners}
-				setActivatorNodeRef={setActivatorNodeRef}
-				{...crosshairGroupProps}
-			/>
+		<div ref={disabled ? undefined : setNodeRef} style={style}>
+			<CrosshairCard listeners={listeners} setActivatorNodeRef={setActivatorNodeRef} {...crosshairGroupProps} />
 		</div>
 	)
 }
