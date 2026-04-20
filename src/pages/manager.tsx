@@ -1,5 +1,5 @@
-import { CrosshairPreview } from '@components/CrosshairPreview'
-import { UserCrosshairs } from '@components/UserCrosshairs'
+import { ManagerPage } from '@components/ManagerPage'
+import { CrosshairCard } from '@components/CrosshairCard'
 import { UserContext } from '@contexts/UserContext'
 import { Text, Stack, Flex, Loader, Center } from '@mantine/core'
 import { useContext } from 'react'
@@ -19,7 +19,7 @@ const SHOOBIE_CROSSHAIR_CODES = [
 		name: 'Vertigo Pugger',
 	},
 ]
-
+// https://dnd.hellopangea.com/?path=/story/examples-multiple-horizontal-lists--stress-test
 export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
 
@@ -51,7 +51,7 @@ export default function Manager() {
 						wrap={'wrap'}
 					>
 						{SHOOBIE_CROSSHAIR_CODES.map((c, i) => (
-							<CrosshairPreview
+							<CrosshairCard
 								crosshairCode={c.crosshairCode}
 								name={c.name}
 								key={i}
@@ -61,20 +61,7 @@ export default function Manager() {
 				</>
 			)}
 
-			{!isLoading && user && (
-				<>
-					<Stack spacing={'xs'}>
-						<Text ta={'center'} c={'dimmed'}>
-							Welcome, {user.username}!
-						</Text>
-						<Text ta={'center'} c={'dimmed'}>
-							Add crosshairs, and then click on a card below to
-							copy the console commands for it.
-						</Text>
-					</Stack>
-					<UserCrosshairs />
-				</>
-			)}
+			{!isLoading && user && <ManagerPage username={user.username} />}
 		</Stack>
 	)
 }
