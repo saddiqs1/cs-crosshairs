@@ -1,3 +1,4 @@
+import { getCrosshair } from '@lib/crosshairCodec'
 // GET - /api/crosshair
 
 // POST - /api/crosshair
@@ -71,6 +72,7 @@ async function postCrosshairs(
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
 		const { crosshairs, crosshairsToDelete } = req.body
+		for (const row of crosshairs) getCrosshair(row.crosshair)
 
 		if (crosshairs.length <= 0 && crosshairsToDelete.length <= 0)
 			throw new Error('There is nothing to update.')

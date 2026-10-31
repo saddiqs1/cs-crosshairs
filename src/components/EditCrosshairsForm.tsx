@@ -19,15 +19,12 @@ import {
 } from '@tabler/icons-react'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
 import { DBTypes } from '@my-types/database'
-import { getCrosshair } from '@lib/crosshairUtils'
+import { getCrosshair } from '@lib/crosshairCodec'
 
 type Props = {
 	onComplete: () => void
 	crosshairs: DBTypes['crosshairs'][]
 }
-
-const crosshairCodeRegex =
-	/CSGO-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}/
 
 const formSchema = z.object({
 	crosshairs: z.array(
@@ -36,10 +33,7 @@ const formSchema = z.object({
 			name: z.string(),
 			crosshair: z
 				.string()
-				.regex(
-					crosshairCodeRegex,
-					'Crosshair code must be in a valid format.'
-				)
+				.trim()
 				.refine(
 					(val) => {
 						try {
@@ -51,7 +45,7 @@ const formSchema = z.object({
 						return true
 					},
 					{
-						message: 'Invalid or old crosshair code.',
+						message: 'Invalid crosshair code.',
 					}
 				),
 			user_id: z.number().nullable(),

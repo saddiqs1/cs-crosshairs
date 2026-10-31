@@ -5,9 +5,8 @@ export default function Home() {
 	return (
 		<Stack spacing={'xl'}>
 			<Text ta={'center'} c={'dimmed'}>
-				Enter in your crosshair code below, and hit the button to
-				receive the commands needed to enter in game to set that
-				crosshair.
+				Paste a current or older crosshair code to copy commands or a
+				share code for the latest CS2 update.
 			</Text>
 			<CrosshairConverter />
 		</Stack>

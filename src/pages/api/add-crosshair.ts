@@ -1,3 +1,4 @@
+import { getCrosshair } from '@lib/crosshairCodec'
 // POST - /api/add-crosshair
 /*
     body: {
@@ -38,6 +39,7 @@ async function postAddCrosshair(
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
 		const { crosshairCode, name } = req.body
+		getCrosshair(crosshairCode)
 
 		await kysely
 			.insertInto('crosshairs')
