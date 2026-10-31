@@ -89,5 +89,16 @@ export const getCrosshair = (
 }
 export const getCurrentCrosshairCode = (code: string, height = 1080) =>
 	encodeCrosshair(getCrosshair(code, height))
-export const getCrosshairCommands = (code: string, height = 1080) =>
-	crosshairToConVars(getCrosshair(code, height)).trim().replace(/\r?\n/g, ';')
+export const getCrosshairCommands = (code: string, height = 1080) => {
+	const crosshair = getCrosshair(code, height)
+	const commands = crosshairToConVars(crosshair).trim().split(/\r?\n/)
+	// CS2 updates the authored screen height when a size setting changes.
+	// Restore the code's reference height after every other setting.
+	// https://github.com/SteamDatabase/GameTracking-CS2/blob/master/DumpSource2/convars.txt
+	return [
+		...commands.filter(
+			(command) => !command.startsWith('cl_crosshair_screen_height ')
+		),
+		`cl_crosshair_screen_height "${crosshair.screenHeight}"`,
+	].join(';')
+}

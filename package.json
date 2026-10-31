@@ -29,7 +29,7 @@
 		"@tabler/icons-react": "^2.45.0",
 		"@vercel/postgres": "^0.5.1",
 		"@vercel/postgres-kysely": "^0.6.0",
-		"csgo-sharecode": "^7.0.0",
+		"csgo-sharecode": "^7.0.1",
 		"eslint": "8.48.0",
 		"eslint-config-next": "13.4.19",
 		"iron-session": "^8.0.1",

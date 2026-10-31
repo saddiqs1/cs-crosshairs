@@ -50,6 +50,7 @@ export const RenderCrosshair: React.FC<Props> = ({ crosshair: c, size }) => {
 			width={size}
 			height={size}
 			xmlns='http://www.w3.org/2000/svg'
+			shapeRendering='crispEdges'
 			role='img'
 			aria-label='Crosshair preview at rest'
 		>
