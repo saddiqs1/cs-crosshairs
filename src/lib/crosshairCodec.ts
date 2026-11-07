@@ -1,6 +1,5 @@
 import {
 	decodeCrosshairShareCode,
-	encodeCrosshair,
 	crosshairToConVars,
 	type CrosshairV1,
 } from 'csgo-sharecode'
@@ -87,8 +86,6 @@ export const getCrosshair = (
 		splitSizeRatio: clamp(source.splitSizeRatio, 0, 1),
 	}
 }
-export const getCurrentCrosshairCode = (code: string, height = 1080) =>
-	encodeCrosshair(getCrosshair(code, height))
 export const getCrosshairCommands = (code: string, height = 1080) => {
 	const crosshair = getCrosshair(code, height)
 	const commands = crosshairToConVars(crosshair).trim().split(/\r?\n/)

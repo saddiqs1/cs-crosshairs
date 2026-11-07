@@ -1,30 +1,152 @@
 import { copy } from '@lib/copy'
 import { notifications } from '@mantine/notifications'
-import { getCurrentCrosshairCode, getCrosshairCommands } from './crosshairCodec'
-export { getCrosshair } from './crosshairCodec'
-const copyCrosshair = (code: string, height: number, commands: boolean) => {
+import { Crosshair } from '@my-types/crosshair'
+import { decodeCrosshairShareCode } from 'csgo-sharecode'
+import { getCrosshairCommands } from './crosshairCodec'
+
+export const copyCommands = (crosshairCode: string) => {
 	try {
-		copy(
-			commands
-				? getCrosshairCommands(code, height)
-				: getCurrentCrosshairCode(code, height)
-		)
+		const crosshairCommands = getCrosshairCommands(crosshairCode)
+
+		copy(crosshairCommands)
+
 		notifications.show({
-			title: 'Crosshair copied',
-			message: commands
-				? 'CS2 commands copied to your clipboard.'
-				: 'Current CS2 code copied to your clipboard.',
+			title: 'Crosshair Copied',
+			message: 'Crosshair is copied to your clipboard',
 			color: 'green',
 		})
-	} catch {
+	} catch (error: any) {
 		notifications.show({
-			title: 'Could not copy crosshair',
-			message: 'Check the crosshair code and screen height.',
+			title: 'Error Copying Crosshair',
+			message: 'Crosshair input is in an incorrect format',
 			color: 'red',
 		})
 	}
 }
-export const copyCommands = (code: string, height = 1080) =>
-	copyCrosshair(code, height, true)
-export const copyCrosshairCode = (code: string, height = 1080) =>
-	copyCrosshair(code, height, false)
+
+export const getCrosshair = (crosshairCode: string): Crosshair => {
+	const crosshair = decodeCrosshairShareCode(crosshairCode.trim())
+	if (crosshair.format === 'legacy-v1') return crosshair
+	// Adapt pixel settings to the existing preview's units.
+	return {
+		...crosshair,
+		length: crosshair.length / 2,
+		thickness: crosshair.thickness / 2,
+		gap: crosshair.gap - crosshair.thickness / 2 - 4,
+		alphaEnabled: true,
+		color: 5,
+		outlineEnabled:
+			crosshair.format === 'legacy-v3'
+				? crosshair.outlineEnabled
+				: crosshair.outlineMode > 0,
+		outline:
+			crosshair.format === 'legacy-v3'
+				? 1
+				: crosshair.outlineMode === 2
+				? 0.5
+				: 1,
+		fixedCrosshairGap: 0,
+		deployedWeaponGapEnabled: false,
+	}
+}
+
+const getColor = (
+	colorCode: number,
+	r: number,
+	g: number,
+	b: number,
+	alphaEnabled: boolean,
+	alpha: number
+) => {
+	let colour = ''
+	const alphaDecimal = alphaEnabled ? alpha / 255 : 1
+
+	if (colorCode === 1) {
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
+	} else if (colorCode === 2) {
+		colour = `rgb(250, 250, 46, ${alphaDecimal})`
+	} else if (colorCode === 3) {
+		colour = `rgb(46, 46, 250, ${alphaDecimal})`
+	} else if (colorCode === 4) {
+		colour = `rgb(46, 250, 250, ${alphaDecimal})`
+	} else if (colorCode === 5) {
+		colour = `rgba(${r}, ${g}, ${b}, ${alphaDecimal})`
+	} else {
+		colour = `rgb(46, 250, 46, ${alphaDecimal})`
+	}
+
+	const outlineColour = `rgb(0, 0, 0, ${alphaDecimal})`
+
+	return { colour, outlineColour }
+}
+
+const getLength = (length: number) => {
+	if (length > 2) {
+		return length * 2 + 1
+	}
+
+	return length * 2
+}
+
+const getThickness = (thickness: number) => {
+	return thickness <= 0 ? 0.5 : thickness
+}
+
+const getOutlineThickness = (outlineThickness: number) => {
+	return outlineThickness === 0
+		? 0
+		: Math.floor(outlineThickness) === 0
+		? 0.6
+		: Math.floor(outlineThickness)
+}
+
+export const getCrosshairValues = (crosshair: Crosshair, scale: number) => {
+	const {
+		length,
+		red,
+		green,
+		blue,
+		gap,
+		alphaEnabled,
+		alpha,
+		outlineEnabled,
+		outline,
+		color,
+		thickness,
+		centerDotEnabled,
+		splitDistance,
+		followRecoil,
+		fixedCrosshairGap,
+		innerSplitAlpha,
+		outerSplitAlpha,
+		splitSizeRatio,
+		tStyleEnabled,
+		deployedWeaponGapEnabled,
+		style,
+	} = crosshair
+
+	const crosshairLength = getLength(length) * scale
+	const crosshairWidth = getThickness(thickness) * 2 * scale
+	const crosshairGap = (Math.floor(gap) + 4) * scale
+	const outlineThickness = getOutlineThickness(outline) * scale
+	const { colour, outlineColour } = getColor(
+		color,
+		red,
+		green,
+		blue,
+		alphaEnabled,
+		alpha
+	)
+
+	return {
+		crosshairLength,
+		crosshairWidth,
+		outlineEnabled,
+		crosshairGap,
+		color: colour,
+		outlineColour,
+		outlineThickness,
+		centerDotEnabled,
+		tStyleEnabled,
+	}
+}

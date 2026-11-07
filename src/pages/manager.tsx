@@ -40,7 +40,7 @@ export default function Manager() {
 							shoobie!
 						</Text>
 						<Text ta={'center'} c={'dimmed'}>
-							Use the buttons below to copy CS2 codes or commands
+							Click on a card below to copy the console commands
 							for it.
 						</Text>
 					</Stack>
@@ -68,8 +68,8 @@ export default function Manager() {
 							Welcome, {user.username}!
 						</Text>
 						<Text ta={'center'} c={'dimmed'}>
-							Add crosshairs, then use the buttons below to copy
-							the console commands for it.
+							Add crosshairs, and then click on a card below to
+							copy the console commands for it.
 						</Text>
 					</Stack>
 					<UserCrosshairs />
