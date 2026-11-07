@@ -19,7 +19,7 @@ export const CrosshairConverter: React.FC<Props> = ({}) => {
 					setCrosshairCode(event.currentTarget.value)
 				}
 				label={'Enter Crosshair Code'}
-				placeholder={'CSGO-some-random-code'}
+				placeholder={'CS... or CSGO-...'}
 				w={320}
 			/>
 			<Button onClick={onCopy}>Copy Crosshair Commands</Button>
