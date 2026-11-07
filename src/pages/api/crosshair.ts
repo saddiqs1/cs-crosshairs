@@ -11,6 +11,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { sessionOptions } from '@lib/auth/session'
 import kysely from '@lib/kysely'
+import { editCrosshairsSchema } from '@lib/crosshairSchemas'
 import {
 	GetCrosshairResponse,
 	PostCrosshairResponse,
@@ -70,7 +71,7 @@ async function postCrosshairs(
 		const sessionUser = await getIronSession<User>(req, res, sessionOptions)
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
-		const { crosshairs, crosshairsToDelete } = req.body
+		const { crosshairs, crosshairsToDelete } = editCrosshairsSchema.parse(req.body)
 
 		if (crosshairs.length <= 0 && crosshairsToDelete.length <= 0)
 			throw new Error('There is nothing to update.')

@@ -9,6 +9,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { sessionOptions } from '@lib/auth/session'
 import kysely from '@lib/kysely'
+import { addCrosshairSchema } from '@lib/crosshairSchemas'
 import { AddCrosshairFormValues } from '@components/AddCrosshairForm'
 import { getIronSession } from 'iron-session'
 import { User } from '@my-types/user'
@@ -37,7 +38,7 @@ async function postAddCrosshair(
 		const sessionUser = await getIronSession<User>(req, res, sessionOptions)
 		if (sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
-		const { crosshairCode, name } = req.body
+		const { crosshairCode, name } = addCrosshairSchema.parse(req.body)
 
 		await kysely
 			.insertInto('crosshairs')
