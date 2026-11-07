@@ -1,15 +1,12 @@
 import { copy } from '@lib/copy'
 import { notifications } from '@mantine/notifications'
 import { Crosshair } from '@my-types/crosshair'
-const csgoSharecode = require('csgo-sharecode')
+import { decodeCrosshairShareCode } from 'csgo-sharecode'
+import { getCrosshairCommands } from './crosshairCodec'
 
 export const copyCommands = (crosshairCode: string) => {
 	try {
-		const crosshairCommands = csgoSharecode
-			.crosshairToConVars(
-				csgoSharecode.decodeCrosshairShareCode(crosshairCode)
-			)
-			.replaceAll('\n', ';')
+		const crosshairCommands = getCrosshairCommands(crosshairCode)
 
 		copy(crosshairCommands)
 
@@ -28,7 +25,29 @@ export const copyCommands = (crosshairCode: string) => {
 }
 
 export const getCrosshair = (crosshairCode: string): Crosshair => {
-	return csgoSharecode.decodeCrosshairShareCode(crosshairCode)
+	const crosshair = decodeCrosshairShareCode(crosshairCode.trim())
+	if (crosshair.format === 'legacy-v1') return crosshair
+	// Adapt pixel settings to the existing preview's units.
+	return {
+		...crosshair,
+		length: crosshair.length / 2,
+		thickness: crosshair.thickness / 2,
+		gap: crosshair.gap - crosshair.thickness / 2 - 4,
+		alphaEnabled: true,
+		color: 5,
+		outlineEnabled:
+			crosshair.format === 'legacy-v3'
+				? crosshair.outlineEnabled
+				: crosshair.outlineMode > 0,
+		outline:
+			crosshair.format === 'legacy-v3'
+				? 1
+				: crosshair.outlineMode === 2
+				? 0.5
+				: 1,
+		fixedCrosshairGap: 0,
+		deployedWeaponGapEnabled: false,
+	}
 }
 
 const getColor = (

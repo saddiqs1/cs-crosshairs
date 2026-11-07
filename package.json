@@ -15,7 +15,8 @@
 		"migrate:up": "npm run db:build && node distDatabase/index.js up",
 		"migrate:down": "npm run db:build && node distDatabase/index.js down",
 		"migrate:create": "node scripts/createMigration.js",
-		"dev:reset-db": "npm run db:build && node distDatabase/index.js fresh && node distDatabase/seed.js"
+		"dev:reset-db": "npm run db:build && node distDatabase/index.js fresh && node distDatabase/seed.js",
+		"test": "node --test tests/*.test.mjs"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.11.1",
@@ -28,13 +29,14 @@
 		"@tabler/icons-react": "^2.45.0",
 		"@vercel/postgres": "^0.5.1",
 		"@vercel/postgres-kysely": "^0.6.0",
-		"csgo-sharecode": "^3.1.0",
+		"csgo-sharecode": "^7.0.1",
 		"eslint": "8.48.0",
 		"eslint-config-next": "13.4.19",
 		"iron-session": "^8.0.1",
 		"kysely": "^0.26.3",
 		"next": "13.4.19",
 		"node-steam-openid": "^1.2.1",
+		"pg": "^8.23.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"swr": "^2.2.4",
@@ -52,5 +54,8 @@
 		"kysely-codegen": "^0.11.0",
 		"prettier": "^3.0.3",
 		"rimraf": "^5.0.5"
+	},
+	"engines": {
+		"node": ">=20.19.0"
 	}
 }

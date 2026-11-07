@@ -5,35 +5,13 @@ import { useAddCrosshairPost } from '@lib/hooks/useAddCrosshairPost'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX, IconCrosshair } from '@tabler/icons-react'
 import { useCrosshair } from '@lib/hooks/useCrosshair'
-import { getCrosshair } from '@lib/crosshairUtils'
+import { addCrosshairSchema } from '@lib/crosshairSchemas'
 
 type Props = {
 	onComplete: () => void
 }
 
-const crosshairCodeRegex =
-	/CSGO-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}-[A-Za-z0-9]{5}/
-
-const formSchema = z.object({
-	name: z.string(),
-	crosshairCode: z
-		.string()
-		.regex(crosshairCodeRegex, 'Crosshair code must be in a valid format.')
-		.refine(
-			(val) => {
-				try {
-					getCrosshair(val)
-				} catch (error) {
-					return false
-				}
-
-				return true
-			},
-			{
-				message: 'Invalid or old crosshair code.',
-			}
-		),
-})
+const formSchema = addCrosshairSchema
 
 export type AddCrosshairFormValues = z.infer<typeof formSchema>
 
