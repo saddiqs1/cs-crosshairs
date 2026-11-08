@@ -9,7 +9,7 @@ import {
 	Popover,
 	Stack,
 } from '@mantine/core'
-import { IconViewfinder } from '@tabler/icons-react'
+import Image from 'next/image'
 import { HeaderLink } from './HeaderLink'
 import { useRouter } from 'next/router'
 import { LoginButton } from './LoginButton'
@@ -53,7 +53,7 @@ export const Header: React.FC = () => {
 				}}
 			>
 				<Group gap={'xs'}>
-					<IconViewfinder size={28} />
+					<Image src='/site-icon.png' width={28} height={28} alt='' />
 					<Title order={3} visibleFrom='xs'>
 						CS2 Crosshair App
 					</Title>
