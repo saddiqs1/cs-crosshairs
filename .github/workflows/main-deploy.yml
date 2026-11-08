@@ -30,6 +30,9 @@ jobs:
     build-and-deploy-to-vercel:
         runs-on: ubuntu-latest
         needs: migrate-database
+        env:
+            VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+            VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
         steps:
             - uses: actions/checkout@v2
