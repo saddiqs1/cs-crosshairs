@@ -1,0 +1,29 @@
+.card {
+	border: 1px solid var(--mantine-color-dark-1);
+	border-radius: var(--mantine-radius-md);
+	transition:
+		box-shadow 150ms ease,
+		transform 100ms ease;
+}
+
+.card:hover {
+	cursor: pointer;
+	box-shadow: var(--mantine-shadow-md);
+	transform: scale(1.05);
+	background: var(--mantine-color-dark-8);
+}
+
+.preview {
+	border: none;
+}
+
+.preview:hover {
+	background: var(--mantine-color-dark-4);
+}
+
+.name {
+	width: 100px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

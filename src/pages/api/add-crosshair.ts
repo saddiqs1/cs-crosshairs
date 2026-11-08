@@ -36,7 +36,7 @@ async function postAddCrosshair(
 ) {
 	try {
 		const sessionUser = await getIronSession<User>(req, res, sessionOptions)
-		if (sessionUser.id <= 0)
+		if (sessionUser.id === undefined || sessionUser.id <= 0)
 			throw new Error('You do not have access to this.')
 		const { crosshairCode, name } = addCrosshairSchema.parse(req.body)
 

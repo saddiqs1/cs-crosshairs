@@ -16,7 +16,12 @@ export const UserCrosshairs: React.FC<Props> = () => {
 					<Loader size={'lg'} />
 				</Center>
 			) : (
-				<Flex justify={'center'} align={'end'} gap={'xl'} wrap={'wrap'}>
+				<Flex
+					justify={'center'}
+					align={'flex-end'}
+					gap={'xl'}
+					wrap={'wrap'}
+				>
 					{crosshairs.map((c, i) => (
 						<CrosshairPreview
 							crosshairCode={c.crosshair}
@@ -24,7 +29,7 @@ export const UserCrosshairs: React.FC<Props> = () => {
 							key={i}
 						/>
 					))}
-					<Stack spacing={'xs'}>
+					<Stack gap={'xs'}>
 						<AddCrosshairCard />
 						<EditCrosshairsCard crosshairs={crosshairs} />
 					</Stack>

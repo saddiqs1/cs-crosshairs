@@ -3,9 +3,8 @@
 import {
 	Group,
 	Title,
-	Header as MantineHeader,
+	AppShell,
 	Container,
-	MediaQuery,
 	Burger,
 	Popover,
 	Stack,
@@ -44,41 +43,41 @@ export const Header: React.FC = () => {
 	)
 
 	return (
-		<MantineHeader height={56} withBorder>
+		<AppShell.Header>
 			<Container
 				h={56}
-				sx={{
+				style={{
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
 				}}
 			>
-				<Group spacing={'xs'}>
+				<Group gap={'xs'}>
 					<IconViewfinder size={28} />
-					<MediaQuery smallerThan={'xs'} styles={{ display: 'none' }}>
-						<Title order={3}>CS2 Crosshair App</Title>
-					</MediaQuery>
+					<Title order={3} visibleFrom='xs'>
+						CS2 Crosshair App
+					</Title>
 				</Group>
 
-				<MediaQuery smallerThan={'md'} styles={{ display: 'none' }}>
-					<Group spacing={'xl'}>{buttons}</Group>
-				</MediaQuery>
-				<MediaQuery largerThan={'md'} styles={{ display: 'none' }}>
-					<Popover opened={opened} onChange={toggle}>
-						<Popover.Target>
-							<Burger
-								opened={opened}
-								onClick={toggle}
-								size='md'
-							/>
-						</Popover.Target>
+				<Group gap={'xl'} visibleFrom='md'>
+					{buttons}
+				</Group>
+				<Popover opened={opened} onChange={toggle}>
+					<Popover.Target>
+						<Burger
+							opened={opened}
+							hiddenFrom='md'
+							aria-label='Toggle navigation'
+							onClick={toggle}
+							size='md'
+						/>
+					</Popover.Target>
 
-						<Popover.Dropdown>
-							<Stack align='center'>{buttons}</Stack>
-						</Popover.Dropdown>
-					</Popover>
-				</MediaQuery>
+					<Popover.Dropdown hiddenFrom='md'>
+						<Stack align='center'>{buttons}</Stack>
+					</Popover.Dropdown>
+				</Popover>
 			</Container>
-		</MantineHeader>
+		</AppShell.Header>
 	)
 }

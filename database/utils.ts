@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import { Kysely, PostgresDialect } from 'kysely'
 import chalk from 'chalk'
 import { DB } from './database'
-import { createKysely } from '@vercel/postgres-kysely'
+import { createPool } from '@vercel/postgres'
 
 export type Env = {
 	databaseUrl: string
@@ -37,8 +37,18 @@ export function getDb(env: Env) {
 	let db: Kysely<DB> | undefined = undefined
 
 	if (env.appEnv === 'production') {
-		db = createKysely<DB>({
-			connectionString: env.databaseUrl,
+		db = new Kysely<DB>({
+			dialect: new PostgresDialect({
+				pool: async () => {
+					const options = { connectionString: env.databaseUrl }
+					const pool = createPool(options)
+					return {
+						options,
+						connect: () => pool.connect(),
+						end: () => pool.end(),
+					}
+				},
+			}),
 		})
 		Object.defineProperty(
 			db.getExecutor().adapter,

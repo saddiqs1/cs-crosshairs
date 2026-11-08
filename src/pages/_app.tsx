@@ -1,3 +1,5 @@
+import '@mantine/core/styles.css'
+import '@mantine/notifications/styles.css'
 import type { AppProps } from 'next/app'
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
@@ -11,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 	return (
 		<UserContext.Provider value={{ user, isLoading }}>
-			<MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
+			<MantineProvider forceColorScheme='dark' theme={theme}>
 				<Notifications />
 				<DefaultLayout>
 					<Component {...pageProps} />

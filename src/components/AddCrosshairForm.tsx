@@ -1,6 +1,6 @@
 import { Button, Loader, Stack, TextInput } from '@mantine/core'
 import { z } from 'zod'
-import { useForm, zodResolver } from '@mantine/form'
+import { useForm, schemaResolver } from '@mantine/form'
 import { useAddCrosshairPost } from '@lib/hooks/useAddCrosshairPost'
 import { showNotification } from '@mantine/notifications'
 import { IconCheck, IconCircleX, IconCrosshair } from '@tabler/icons-react'
@@ -23,7 +23,7 @@ export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 			name: '',
 			crosshairCode: '',
 		},
-		validate: zodResolver(formSchema),
+		validate: schemaResolver(formSchema, { sync: true }),
 	})
 
 	const handleSubmit = async (values: AddCrosshairFormValues) => {
@@ -53,7 +53,7 @@ export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit, handleInvalidForm)}>
-			<Stack pb={'xl'} spacing={'sm'}>
+			<Stack pb={'xl'} gap={'sm'}>
 				<TextInput
 					label={'Enter Name'}
 					{...form.getInputProps('name')}
@@ -67,7 +67,7 @@ export const AddCrosshairForm: React.FC<Props> = ({ onComplete }) => {
 			<Button
 				type='submit'
 				disabled={isAddingCrosshair || !form.isDirty()}
-				leftIcon={
+				leftSection={
 					isAddingCrosshair ? (
 						<Loader size={'xs'} />
 					) : (

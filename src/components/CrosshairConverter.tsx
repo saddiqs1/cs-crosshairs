@@ -12,7 +12,7 @@ export const CrosshairConverter: React.FC<Props> = ({}) => {
 	}
 
 	return (
-		<Flex justify={'center'} align={'end'} gap={'xl'}>
+		<Flex justify={'center'} align={'flex-end'} gap={'xl'}>
 			<TextInput
 				value={crosshairCode}
 				onChange={(event) =>

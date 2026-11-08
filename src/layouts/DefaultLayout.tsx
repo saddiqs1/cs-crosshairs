@@ -11,8 +11,9 @@ const DefaultLayout: React.FC<Props> = ({ children }) => {
 	const { isLocal } = useEnvironment()
 
 	return (
-		<AppShell header={<Header />}>
-			{children}
+		<AppShell header={{ height: 56 }} padding='md'>
+			<Header />
+			<AppShell.Main>{children}</AppShell.Main>
 			{isLocal && <EnvironmentBadge />}
 		</AppShell>
 	)

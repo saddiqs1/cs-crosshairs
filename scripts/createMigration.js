@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const chalk = require('chalk').default
 
 const timestamp = new Date().toISOString().replace(/\D/g, '') // e.g. 2023-06-08T20:31:08.111Z --> 20230608203108111
 const migrationName = process.argv[2]

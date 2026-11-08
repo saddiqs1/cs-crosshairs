@@ -6,7 +6,7 @@ type Props = {}
 export const UserAvatar: React.FC<Props> = ({}) => {
 	return (
 		<Button
-			leftIcon={<IconLogout />}
+			leftSection={<IconLogout />}
 			component='a'
 			href='/api/auth/logout'
 			color='teal'

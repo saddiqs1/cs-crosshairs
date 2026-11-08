@@ -24,7 +24,7 @@ export default function Manager() {
 	const { user, isLoading } = useContext(UserContext)
 
 	return (
-		<Stack spacing={'xl'}>
+		<Stack gap={'xl'}>
 			{isLoading && (
 				<Center>
 					<Loader size={'lg'} />
@@ -33,7 +33,7 @@ export default function Manager() {
 
 			{!isLoading && !user && (
 				<>
-					<Stack spacing={'xs'}>
+					<Stack gap={'xs'}>
 						<Text ta={'center'} c={'dimmed'}>
 							Login to be able to manage crosshairs. In the
 							meantime, here are a choice of crosshairs from
@@ -46,7 +46,7 @@ export default function Manager() {
 					</Stack>
 					<Flex
 						justify={'center'}
-						align={'end'}
+						align={'flex-end'}
 						gap={'xl'}
 						wrap={'wrap'}
 					>
@@ -63,7 +63,7 @@ export default function Manager() {
 
 			{!isLoading && user && (
 				<>
-					<Stack spacing={'xs'}>
+					<Stack gap={'xs'}>
 						<Text ta={'center'} c={'dimmed'}>
 							Welcome, {user.username}!
 						</Text>

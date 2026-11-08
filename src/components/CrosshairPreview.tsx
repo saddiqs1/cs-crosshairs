@@ -1,3 +1,4 @@
+import classes from './CrosshairCard.module.css'
 import { Box, Stack, Text } from '@mantine/core'
 import { RenderCrosshair } from './RenderCrosshair'
 import { copyCommands, getCrosshair } from '@lib/crosshairUtils'
@@ -10,19 +11,10 @@ type Props = {
 export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 	return (
 		<Stack
-			spacing={6}
+			gap={6}
 			p={'sm'}
 			bg='dark.5'
-			sx={(theme) => ({
-				borderRadius: theme.radius.md,
-				transition: 'shadow 150ms ease, transform 100ms ease;',
-				'&:hover': {
-					cursor: 'pointer',
-					boxShadow: theme.shadows.md,
-					transform: `scale(1.05)`,
-					background: theme.colors.dark[4],
-				},
-			})}
+			className={`${classes.card} ${classes.preview}`}
 			onClick={() => copyCommands(crosshairCode)}
 			title={`Copy ${name}`}
 		>
@@ -36,12 +28,7 @@ export const CrosshairPreview: React.FC<Props> = ({ crosshairCode, name }) => {
 					c={'dimmed'}
 					size={'sm'}
 					lh={1.5}
-					sx={{
-						width: 100,
-						whiteSpace: 'nowrap',
-						overflow: 'hidden',
-						textOverflow: 'ellipsis',
-					}}
+					className={classes.name}
 				>
 					{name}
 				</Text>
