@@ -24,12 +24,10 @@ const LINKS = [
 	{ link: '/manager', label: 'Manager' },
 ]
 
-type Props = {}
-
-export const Header: React.FC<Props> = ({}) => {
+export const Header: React.FC = () => {
 	const router = useRouter()
 	const { user, isLoading } = useContext(UserContext)
-	const [opened, { close, toggle }] = useDisclosure(false)
+	const [opened, { toggle }] = useDisclosure(false)
 
 	const buttons = (
 		<>
