@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
-import { Kysely, Migrator, FileMigrationProvider, sql } from 'kysely';
+import { Kysely, sql } from 'kysely';
+import { Migrator, FileMigrationProvider } from 'kysely/migration';
 import chalk from 'chalk';
 import { Env, getDb, getEnv } from './utils';
 
@@ -10,6 +11,7 @@ function getMigrator(db: Kysely<any>) {
 		provider: new FileMigrationProvider({
 			fs,
 			path,
+			import: async (filePath) => require(filePath),
 			migrationFolder: path.join(__dirname, 'migrations'),
 		}),
 	});

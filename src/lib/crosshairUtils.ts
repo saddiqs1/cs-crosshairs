@@ -114,15 +114,7 @@ export const getCrosshairValues = (crosshair: Crosshair, scale: number) => {
 		color,
 		thickness,
 		centerDotEnabled,
-		splitDistance,
-		followRecoil,
-		fixedCrosshairGap,
-		innerSplitAlpha,
-		outerSplitAlpha,
-		splitSizeRatio,
 		tStyleEnabled,
-		deployedWeaponGapEnabled,
-		style,
 	} = crosshair
 
 	const crosshairLength = getLength(length) * scale

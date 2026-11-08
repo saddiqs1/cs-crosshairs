@@ -26,21 +26,20 @@ async function main(db: Kysely<DB>) {
 	rl.close()
 
 	await db.transaction().execute(async (trx) => {
-		// Any seeding happens here.
-		await db
+		await trx
 			.insertInto('users')
 			.values({ id: 1, steam_uid: steamId64 })
 			.executeTakeFirstOrThrow()
 		console.log(chalk.greenBright(`\nUser ${steamId64} added.`))
 
 		if (insertCrosshairs.toLowerCase() === 'y') {
-			const user = await db
+			const user = await trx
 				.selectFrom('users')
 				.select('id')
 				.where('steam_uid', '=', steamId64)
 				.executeTakeFirstOrThrow()
 
-			await db
+			await trx
 				.insertInto('crosshairs')
 				.values([
 					{

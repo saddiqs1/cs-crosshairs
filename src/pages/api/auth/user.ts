@@ -22,7 +22,12 @@ async function getUser(req: NextApiRequest, res: NextApiResponse) {
 	try {
 		const sessionUser = await getIronSession<User>(req, res, sessionOptions)
 
-		if (!sessionUser) {
+		if (
+			sessionUser.id === undefined ||
+			sessionUser.id <= 0 ||
+			typeof sessionUser.username !== 'string' ||
+			typeof sessionUser.avatarUrl !== 'string'
+		) {
 			throw new Error('Session user does not exist.')
 		}
 

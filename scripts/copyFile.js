@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const chalk = require('chalk')
+const chalk = require('chalk').default
 
 const source = process.argv[2]
 const destination = process.argv[3]

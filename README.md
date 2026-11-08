@@ -13,16 +13,18 @@ You can also store crosshairs on the site, to allow you to be able to switch qui
 -   [NextJs](https://nextjs.org/) with [Typescript](https://www.typescriptlang.org/)
 -   [SWR](https://swr.vercel.app/)
 -   [Iron Session](https://github.com/vvo/iron-session)
--   [Mantine Component Library (v6)](https://v6.mantine.dev/pages/getting-started/)
+-   [Mantine Component Library (v9)](https://mantine.dev/)
 -   [Kysely](https://kysely.dev/) with [kysely-codegen](https://github.com/RobinBlomberg/kysely-codegen)
 -   [Postgres](https://www.postgresql.org/)
+
+ESLint stays on version 9 and TypeScript on version 6 to match the peer dependencies of Next.js's lint plugins. The scoped `minimatch` override installs a patched release for the TypeScript parser.
 
 ## Prerequisites
 
 You will need to install the following in order to build, run and develop this repo locally:
 
 -   [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
--   [Node & `npm`](https://nodejs.org/en/download)
+-   [Node 24 or later & `npm`](https://nodejs.org/en/download)
     -   Alternatively you can download both of these via [`nvm`](https://github.com/nvm-sh/nvm#installing-and-updating)
 -   [Postgres](https://www.postgresql.org/download/)
 

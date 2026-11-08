@@ -3,14 +3,13 @@
 import {
 	Group,
 	Title,
-	Header as MantineHeader,
+	AppShell,
 	Container,
-	MediaQuery,
 	Burger,
 	Popover,
 	Stack,
 } from '@mantine/core'
-import { IconViewfinder } from '@tabler/icons-react'
+import Image from 'next/image'
 import { HeaderLink } from './HeaderLink'
 import { useRouter } from 'next/router'
 import { LoginButton } from './LoginButton'
@@ -24,12 +23,10 @@ const LINKS = [
 	{ link: '/manager', label: 'Manager' },
 ]
 
-type Props = {}
-
-export const Header: React.FC<Props> = ({}) => {
+export const Header: React.FC = () => {
 	const router = useRouter()
 	const { user, isLoading } = useContext(UserContext)
-	const [opened, { close, toggle }] = useDisclosure(false)
+	const [opened, { toggle }] = useDisclosure(false)
 
 	const buttons = (
 		<>
@@ -46,41 +43,41 @@ export const Header: React.FC<Props> = ({}) => {
 	)
 
 	return (
-		<MantineHeader height={56} withBorder>
+		<AppShell.Header>
 			<Container
 				h={56}
-				sx={{
+				style={{
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
 				}}
 			>
-				<Group spacing={'xs'}>
-					<IconViewfinder size={28} />
-					<MediaQuery smallerThan={'xs'} styles={{ display: 'none' }}>
-						<Title order={3}>CS2 Crosshair App</Title>
-					</MediaQuery>
+				<Group gap={'xs'}>
+					<Image src='/site-icon.png' width={28} height={28} alt='' />
+					<Title order={3} visibleFrom='xs'>
+						CS2 Crosshair App
+					</Title>
 				</Group>
 
-				<MediaQuery smallerThan={'md'} styles={{ display: 'none' }}>
-					<Group spacing={'xl'}>{buttons}</Group>
-				</MediaQuery>
-				<MediaQuery largerThan={'md'} styles={{ display: 'none' }}>
-					<Popover opened={opened} onChange={toggle}>
-						<Popover.Target>
-							<Burger
-								opened={opened}
-								onClick={toggle}
-								size='md'
-							/>
-						</Popover.Target>
+				<Group gap={'xl'} visibleFrom='md'>
+					{buttons}
+				</Group>
+				<Popover opened={opened} onChange={toggle}>
+					<Popover.Target>
+						<Burger
+							opened={opened}
+							hiddenFrom='md'
+							aria-label='Toggle navigation'
+							onClick={toggle}
+							size='md'
+						/>
+					</Popover.Target>
 
-						<Popover.Dropdown>
-							<Stack align='center'>{buttons}</Stack>
-						</Popover.Dropdown>
-					</Popover>
-				</MediaQuery>
+					<Popover.Dropdown hiddenFrom='md'>
+						<Stack align='center'>{buttons}</Stack>
+					</Popover.Dropdown>
+				</Popover>
 			</Container>
-		</MantineHeader>
+		</AppShell.Header>
 	)
 }

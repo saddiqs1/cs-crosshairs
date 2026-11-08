@@ -2,7 +2,9 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "ES2019",
+		"skipLibCheck": true,
 		"outDir": "distDatabase",
+		"rootDir": "database",
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"sourceMap": true

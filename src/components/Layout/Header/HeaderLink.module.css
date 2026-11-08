@@ -1,0 +1,14 @@
+.link {
+	color: var(--mantine-color-dark-0);
+	font-size: var(--mantine-font-size-sm);
+	border-radius: var(--mantine-radius-sm);
+}
+
+.link:hover {
+	background: var(--mantine-color-dark-6);
+}
+
+.link[data-active] {
+	color: #fff;
+	background: var(--mantine-color-blue-6);
+}

@@ -6,7 +6,7 @@ type Props = {}
 export const LoginButton: React.FC<Props> = ({}) => {
 	return (
 		<Button
-			leftIcon={<IconBrandSteam />}
+			leftSection={<IconBrandSteam />}
 			component='a'
 			href='/api/auth/login'
 			color='teal'

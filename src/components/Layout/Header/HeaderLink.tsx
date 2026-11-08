@@ -1,5 +1,6 @@
 import { UnstyledButton, Text } from '@mantine/core'
 import Link from 'next/link'
+import classes from './HeaderLink.module.css'
 
 type Props = {
 	href: string
@@ -10,16 +11,8 @@ type Props = {
 export const HeaderLink: React.FC<Props> = ({ href, label, isActive }) => {
 	const button = (
 		<UnstyledButton
-			sx={(theme) => ({
-				color: isActive ? '#fff' : theme.colors.dark[0],
-				background: isActive ? theme.colors.blue[6] : undefined,
-				fontSize: theme.fontSizes.sm,
-				borderRadius: theme.radius.sm,
-				'&:hover': !isActive && {
-					cursor: 'pointer',
-					background: theme.colors.dark[6],
-				},
-			})}
+			className={classes.link}
+			data-active={isActive || undefined}
 			px={12}
 			py={8}
 			h={'100%'}

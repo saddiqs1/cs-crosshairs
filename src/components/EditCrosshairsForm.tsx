@@ -7,7 +7,7 @@ import {
 	TextInput,
 } from '@mantine/core'
 import { z } from 'zod'
-import { useForm, zodResolver } from '@mantine/form'
+import { useForm, schemaResolver } from '@mantine/form'
 import { useCrosshairPost } from '@lib/hooks/useCrosshairPost'
 import { showNotification } from '@mantine/notifications'
 import {
@@ -41,7 +41,7 @@ export const EditCrosshairsForm: React.FC<Props> = ({
 			crosshairs,
 			crosshairsToDelete: [],
 		},
-		validate: zodResolver(formSchema),
+		validate: schemaResolver(formSchema, { sync: true }),
 	})
 
 	const handleSubmit = async (values: EditCrosshairFormValues) => {
@@ -106,7 +106,7 @@ export const EditCrosshairsForm: React.FC<Props> = ({
 
 	return (
 		<form onSubmit={form.onSubmit(handleSubmit, handleInvalidForm)}>
-			<Stack pb={'xl'} spacing={'sm'}>
+			<Stack pb={'xl'} gap={'sm'}>
 				{form.values.crosshairs.map((c, i) => (
 					<Flex
 						justify='flex-start'
@@ -117,13 +117,13 @@ export const EditCrosshairsForm: React.FC<Props> = ({
 						px={'lg'}
 						py={'xs'}
 						key={i}
-						sx={(theme) => ({
+						style={{
 							background: isSelectedForDeletion(c.id)
-								? theme.fn.rgba(theme.colors.red[9], 0.3)
-								: theme.colors.dark[6],
-							borderRadius: theme.radius.md,
-							border: `1px ${theme.colors.dark[4]} solid`,
-						})}
+								? 'rgba(224, 49, 49, 0.3)'
+								: 'var(--mantine-color-dark-6)',
+							borderRadius: 'var(--mantine-radius-md)',
+							border: '1px solid var(--mantine-color-dark-4)',
+						}}
 					>
 						<TextInput
 							label={'Edit Name'}
@@ -155,7 +155,7 @@ export const EditCrosshairsForm: React.FC<Props> = ({
 			<Button
 				type='submit'
 				disabled={isCrosshairsUpdating || !form.isDirty()}
-				leftIcon={
+				leftSection={
 					isCrosshairsUpdating ? (
 						<Loader size={'xs'} />
 					) : (
